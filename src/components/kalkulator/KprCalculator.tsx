@@ -6,6 +6,7 @@ import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
 import { formatCurrency } from "../../lib/utils";
+import { generateCalculatorPDF } from "../../lib/pdfGenerator";
 
 const KprCalculator = () => {
   // Page-level tabs exist in `src/pages/Kalkulator.tsx`; avoid duplicating here
@@ -644,6 +645,53 @@ const KprCalculator = () => {
             <Button 
               className="flex-1 bg-fundax-blue hover:bg-fundax-blue/90 text-white transition-all shadow-md hover:shadow-lg disabled:opacity-50" 
               disabled={!hasCalculated}
+              onClick={async () => {
+                if (!hasCalculated) return;
+                
+                const pdfData = {
+                  type: 'KPR' as const,
+                  inputs: {
+                    pendapatanBulanan: formatCurrency(pendapatanBulanan),
+                    usia: `${usia} tahun`,
+                    lamaPinjaman: `${lamaPinjaman} tahun`,
+                    jumlahCicilan: formatCurrency(jumlahCicilan),
+                    sukuBungaFix: `${sukuBungaFix}%`,
+                    masaTahunFix: `${masaTahunFix} tahun`,
+                    sukuBungaFloating: `${sukuBungaFloating}%`,
+                    tipeBungaAcuan: tipeBungaAcuan.replace(/_/g, ' '),
+                    isBungaBergerak: isBungaBergerak ? 'Ya' : 'Tidak'
+                  },
+                  results: [
+                    {
+                      title: 'Maksimal Limit Pinjaman',
+                      value: formatCurrency(maksimalLimitPinjaman)
+                    },
+                    {
+                      title: isBungaBergerak ? 'Angsuran Bulanan' : 'Angsuran Masa Fixed',
+                      value: formatCurrency(angsuranMasaFixedBunga) + '/Bulan'
+                    },
+                    ...(isBungaBergerak ? [] : [{
+                      title: 'Angsuran Masa Floating',
+                      value: formatCurrency(angsuranMasaFloatingBunga) + '/Bulan'
+                    }]),
+                    {
+                      title: 'Jangka Waktu Angsuran',
+                      value: `${jangkaWaktuAngsuran} Bulan`
+                    }
+                  ],
+                  tableData: {
+                    headers: ['Bulan', 'Bunga', 'Angsuran', 'Sisa Plafond'],
+                    rows: tabelAngsuran.slice(0, 50).map(row => [
+                      row.bulan,
+                      row.bunga,
+                      row.angsuran,
+                      row.sisaPlafond
+                    ])
+                  }
+                };
+                
+                await generateCalculatorPDF(pdfData);
+              }}
             >
               Download PDF
             </Button>

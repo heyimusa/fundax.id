@@ -5,6 +5,7 @@ import { Checkbox } from "../ui/checkbox";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
 import { formatCurrency } from "../../lib/utils";
+import { generateCalculatorPDF } from "../../lib/pdfGenerator";
 
 const TakeOverCalculator = () => {
   const [activeResultTab, setActiveResultTab] = useState<string>("HASIL_KPR");
@@ -540,7 +541,57 @@ const TakeOverCalculator = () => {
       )}
       
       <div className="mt-6 flex gap-2">
-        <Button className="w-full bg-fundax-blue hover:bg-fundax-blue/90" disabled={!hasCalculated}>
+        <Button 
+          className="w-full bg-fundax-blue hover:bg-fundax-blue/90" 
+          disabled={!hasCalculated}
+          onClick={async () => {
+            if (!hasCalculated) return;
+            
+            const pdfData = {
+              type: 'TakeOver' as const,
+              inputs: {
+                pendapatanBulanan: formatCurrency(pendapatanBulanan),
+                usia: `${usia} tahun`,
+                lamaPinjaman: `${lamaPinjaman} tahun`,
+                sisaPinjaman: formatCurrency(sisaPinjaman),
+                jumlahCicilan: formatCurrency(jumlahCicilan),
+                sukuBungaFix: `${sukuBungaFix}%`,
+                masaTahunFix: `${masaTahunFix} tahun`,
+                sukuBungaFloating: `${sukuBungaFloating}%`,
+                isBungaBergerak: isBungaBergerak ? 'Ya' : 'Tidak'
+              },
+              results: [
+                {
+                  title: 'Maksimal Limit Pinjaman',
+                  value: formatCurrency(maksimalLimitPinjaman)
+                },
+                {
+                  title: isBungaBergerak ? 'Angsuran Bulanan' : 'Angsuran Masa Fixed',
+                  value: formatCurrency(angsuranMasaFixedBunga) + '/Bulan'
+                },
+                ...(isBungaBergerak ? [] : [{
+                  title: 'Angsuran Masa Floating',
+                  value: formatCurrency(angsuranMasaFloatingBunga) + '/Bulan'
+                }]),
+                {
+                  title: 'Jangka Waktu Angsuran',
+                  value: `${jangkaWaktuAngsuran} Bulan`
+                }
+              ],
+              tableData: {
+                headers: ['Bulan', 'Bunga', 'Angsuran', 'Sisa Plafond'],
+                rows: tabelAngsuran.slice(0, 50).map(row => [
+                  row.bulan,
+                  row.bunga,
+                  row.angsuran,
+                  row.sisaPlafond
+                ])
+              }
+            };
+            
+            await generateCalculatorPDF(pdfData);
+          }}
+        >
           Download PDF
         </Button>
         <Button className="w-full bg-fundax-blue hover:bg-fundax-blue/90" disabled={!hasCalculated}>

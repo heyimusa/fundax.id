@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Slider } from "../ui/slider";
+import { Button } from "../ui/button";
 import { formatCurrency } from "../../lib/utils";
+import { generateCalculatorPDF } from "../../lib/pdfGenerator";
 
 const DepositoCalculator = () => {
   const [pokok, setPokok] = useState<number>(10000000);
@@ -142,6 +144,49 @@ const DepositoCalculator = () => {
               <p className="text-sm font-medium">Total Akhir</p>
               <p className="text-lg font-bold text-fundax-blue">{formatCurrency(totalAkhir)}</p>
             </div>
+          </div>
+          
+          <div className="mt-6">
+            <Button 
+              className="w-full bg-fundax-blue hover:bg-fundax-blue/90"
+              onClick={async () => {
+                const pdfData = {
+                  type: 'Deposito' as const,
+                  inputs: {
+                    pokokDeposito: formatCurrency(pokok),
+                    sukuBunga: `${sukuBunga}%`,
+                    jangkaWaktu: `${jangkaWaktu} bulan`,
+                    pajakBunga: `${pajakBunga}%`
+                  },
+                  results: [
+                    {
+                      title: 'Pokok Deposito',
+                      value: formatCurrency(pokok)
+                    },
+                    {
+                      title: 'Bunga Bruto',
+                      value: formatCurrency(bungaBruto)
+                    },
+                    {
+                      title: `Pajak (${pajakBunga}%)`,
+                      value: formatCurrency(pajakTotal)
+                    },
+                    {
+                      title: 'Bunga Netto',
+                      value: formatCurrency(bungaNetto)
+                    },
+                    {
+                      title: 'Total Akhir',
+                      value: formatCurrency(totalAkhir)
+                    }
+                  ]
+                };
+                
+                await generateCalculatorPDF(pdfData);
+              }}
+            >
+              Download PDF
+            </Button>
           </div>
         </div>
       </div>
