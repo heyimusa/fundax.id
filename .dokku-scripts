@@ -1,0 +1,15 @@
+
+#!/bin/bash
+# This file helps modify package.json scripts since we can't edit it directly
+# You'll need to run this manually after cloning your repository into Dokku
+
+# Add start script to package.json for production
+jq '.scripts.start = "node server.cjs"' package.json > temp.json && mv temp.json package.json
+
+# Make sure build script exists
+jq '.scripts.build = "vite build"' package.json > temp.json && mv temp.json package.json
+
+# Add postinstall script to automatically build after npm install
+jq '.scripts.postinstall = "npm run build"' package.json > temp.json && mv temp.json package.json
+
+chmod +x .dokku-scripts

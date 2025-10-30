@@ -1,0 +1,1 @@
+/home/heyimusa/scripts/fix-cni-configs.sh

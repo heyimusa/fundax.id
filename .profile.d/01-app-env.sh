@@ -1,0 +1,5 @@
+export DOKKU_APP_RESTORE='1'
+export DOKKU_APP_TYPE='herokuish'
+export DOKKU_PROXY_PORT='80'
+export DOKKU_PROXY_SSL_PORT='443'
+export GIT_REV='28f6756009c8cd5bc64ea42e37dcef731ad19dcb'
