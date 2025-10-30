@@ -1,8 +1,14 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <svg width="800" height="400" xmlns="http://www.w3.org/2000/svg">
-  <rect width="800" height="400" fill="#f5f7fa"/>
-  <text x="50%" y="50%" font-family="Arial, sans-serif" font-size="20" 
-        fill="#1e5c9d" text-anchor="middle" dominant-baseline="middle">
-    TIPS MEMILIH PRODUK PINJAMAN
-  </text>
+  <defs>
+    <linearGradient id="articleGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#E6F2FF;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3399FF;stop-opacity:0.3" />
+    </linearGradient>
+  </defs>
+  <rect width="800" height="400" fill="url(#articleGrad)"/>
+  <rect x="0" y="0" width="800" height="160" fill="#0066CC" opacity="0.1"/>
+  <rect x="80" y="60" width="240" height="100" rx="8" fill="#3399FF" opacity="0.2"/>
+  <rect x="400" y="80" width="280" height="60" rx="8" fill="#0066CC" opacity="0.3"/>
+  <text x="400" y="280" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#003366" text-anchor="middle" dominant-baseline="middle">tips memilih produk pinjaman</text>
+  <text x="400" y="320" font-family="Arial, sans-serif" font-size="14" fill="#666666" text-anchor="middle" dominant-baseline="middle">Article Image</text>
 </svg>
