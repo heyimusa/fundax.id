@@ -44,12 +44,12 @@ const steps = [
 ];
 
 const products = [
-  'KPR & Multiguna',
-  'Take Over',
-  'Modal Usaha',
-  'Deposito',
-  'Kredit Tanpa Agunan',
-  'Investasi'
+  'Kredit Kepemilikan Rumah',
+  'Modal Kerja',
+  'Pinjaman Bridging',
+  'Kredit Multiguna',
+  'Pemasaran Asset',
+  'Take Over'
 ];
 
 const Ajukan = () => {

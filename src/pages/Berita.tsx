@@ -18,7 +18,6 @@ import { Link } from 'react-router-dom';
 
 // Article images
 import article1 from '../assets/images/articles/tips-memilih-produk-pinjaman.svg';
-import article2 from '../assets/images/articles/fundax-terdaftar-ojk.svg';
 import article3 from '../assets/images/articles/panduan-lengkap-kpr.svg';
 import article4 from '../assets/images/articles/keuntungan-loan-adviser.svg';
 import article5 from '../assets/images/articles/fundax-ekspansi-24-kota.svg';
@@ -48,13 +47,13 @@ const articles: Article[] = [
   },
   {
     id: '2',
-    title: 'Fundax Terdaftar Resmi di OJK: Komitmen Keamanan dan Transparansi',
-    excerpt: 'Fundax telah mendapatkan registrasi resmi dari Otoritas Jasa Keuangan dengan nomor S-194/IK.01/2025. Ini adalah bukti komitmen kami terhadap keamanan dan transparansi dalam melayani klien.',
-    category: 'Berita',
-    author: 'Admin Fundax',
+    title: 'Tips Mengelola Keuangan Bisnis dengan Lebih Efektif',
+    excerpt: 'Pelajari strategi dan tips praktis untuk mengelola keuangan bisnis Anda dengan lebih efektif. Dari pengelolaan cash flow hingga strategi investasi untuk bisnis.',
+    category: 'Tips & Trik',
+    author: 'Tim Fundax',
     date: '10 Januari 2025',
-    image: article2,
-    readTime: '3 menit'
+    image: article4,
+    readTime: '5 menit'
   },
   {
     id: '3',
@@ -73,7 +72,7 @@ const articles: Article[] = [
     category: 'Tips & Trik',
     author: 'Tim Fundax',
     date: '28 Desember 2024',
-    image: article4,
+    image: article6,
     readTime: '6 menit'
   },
   {
@@ -93,7 +92,7 @@ const articles: Article[] = [
     category: 'Edukasi',
     author: 'Tim Fundax',
     date: '15 Desember 2024',
-    image: article6,
+    image: article3,
     readTime: '7 menit'
   }
 ];

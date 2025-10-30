@@ -8,34 +8,32 @@ import {
   Briefcase, 
   TrendingUp, 
   Building2, 
-  Clock, 
   CheckCircle, 
   Users,
   DollarSign,
   ArrowRight,
-  FileText,
   Zap,
   Shield,
-  Target
+  KeyRound
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const solutions = [
   {
     icon: <Briefcase className="text-fundax-blue" size={40} />,
-    title: 'Modal Usaha',
+    title: 'Modal Kerja',
     description: 'Dapatkan pendanaan untuk modal kerja, ekspansi bisnis, atau investasi peralatan dengan proses cepat dan fleksibel.',
     features: [
       'Plafon hingga Rp 2 Miliar',
       'Proses cepat 3-5 hari kerja',
-      'Tanpa agunan untuk plafon tertentu',
+      'Tenor fleksibel',
       'Cicilan fleksibel'
     ],
-    link: '/produk/modal-usaha'
+    link: '/produk'
   },
   {
     icon: <Building2 className="text-fundax-blue" size={40} />,
-    title: 'KPR & Multiguna',
+    title: 'Kredit Kepemilikan Rumah',
     description: 'Solusi pembiayaan properti untuk kantor, gudang, atau investasi properti bisnis dengan suku bunga kompetitif.',
     features: [
       'Plafon hingga 70% nilai properti',
@@ -43,31 +41,31 @@ const solutions = [
       'Suku bunga kompetitif',
       'Proses cepat dan mudah'
     ],
-    link: '/produk/kpr-multiguna'
+    link: '/produk'
   },
   {
     icon: <TrendingUp className="text-fundax-blue" size={40} />,
-    title: 'Refinancing',
-    description: 'Pindahkan pinjaman bisnis Anda ke Fundax untuk mendapatkan bunga lebih rendah dan syarat yang lebih menguntungkan.',
+    title: 'Pinjaman Bridging',
+    description: 'Pembiayaan jangka pendek untuk kebutuhan bridge financing dengan proses yang cepat dan fleksibel.',
     features: [
-      'Bunga lebih rendah',
-      'Tenor bisa diperpanjang',
-      'Cicilan lebih ringan',
-      'Biaya administrasi rendah'
+      'Proses cepat',
+      'Jangka pendek',
+      'Fleksibel',
+      'Solusi bridge financing'
     ],
-    link: '/produk/take-over'
+    link: '/produk'
   },
   {
-    icon: <Target className="text-fundax-blue" size={40} />,
-    title: 'Investasi',
-    description: 'Kelola dan kembangkan dana bisnis Anda dengan berbagai pilihan investasi yang aman dan menguntungkan.',
+    icon: <KeyRound className="text-fundax-blue" size={40} />,
+    title: 'Kredit Multiguna',
+    description: 'Pinjaman multiguna untuk berbagai kebutuhan keuangan bisnis Anda dengan jaminan properti.',
     features: [
-      'Return kompetitif',
-      'Diversifikasi portofolio',
-      'Manajemen profesional',
-      'Risk management'
+      'Plafon hingga 70% nilai properti',
+      'Tenor fleksibel hingga 20 tahun',
+      'Bunga kompetitif',
+      'Berbagai tujuan penggunaan'
     ],
-    link: '/produk/investasi'
+    link: '/produk'
   }
 ];
 
@@ -81,8 +79,8 @@ const benefits = [
   {
     icon: <Shield className="text-fundax-blue" size={32} />,
     title: 'Terpercaya',
-    description: 'Terdaftar di OJK dan memiliki sertifikasi ISO 27001:2022',
-    stat: 'OJK Registered'
+    description: 'Tim profesional berpengalaman lebih dari 15 tahun di dunia perbankan dan keuangan',
+    stat: '15+ Tahun Pengalaman'
   },
   {
     icon: <Users className="text-fundax-blue" size={32} />,
@@ -127,7 +125,7 @@ const Bisnis = () => {
             </h1>
             <p className="text-xl text-blue-100 max-w-2xl mx-auto mb-8">
               Dukung pertumbuhan bisnis Anda dengan berbagai produk finansial terbaik. 
-              Dari modal usaha hingga investasi, kami siap membantu bisnis Anda berkembang.
+              Dari modal kerja hingga pinjaman bridging, kami siap membantu bisnis Anda berkembang.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button asChild size="lg" className="bg-white text-fundax-blue hover:bg-gray-100">
@@ -135,8 +133,13 @@ const Bisnis = () => {
                   Ajukan Sekarang
                 </Link>
               </Button>
-              <Button asChild size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
-                <Link to="/fundax-advisor">
+              <Button 
+                asChild 
+                size="lg" 
+                variant="outline" 
+                className="border-2 border-white !text-white bg-transparent hover:!bg-white hover:!text-fundax-blue transition-all"
+              >
+                <Link to="/fundax-advisor" className="text-white hover:text-fundax-blue">
                   Konsultasi Gratis
                 </Link>
               </Button>
@@ -155,7 +158,7 @@ const Bisnis = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {solutions.map((solution, idx) => (
               <Card key={idx} className="hover:shadow-xl transition-shadow">
                 <CardHeader>

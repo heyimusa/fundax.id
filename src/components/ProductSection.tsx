@@ -1,39 +1,29 @@
 
 import React from 'react';
 import ProductCard from './ProductCard';
-import { Home, PiggyBank, Briefcase, Building, CreditCard, Target } from 'lucide-react';
+import { Home, Briefcase, Building2, KeyRound } from 'lucide-react';
 
 const ProductSection = () => {
   const products = [
     {
-      title: "KPR & Multiguna",
-      description: "Dapatkan solusi KPR dan pinjaman multiguna untuk kebutuhan properti dan keuangan Anda dengan suku bunga kompetitif",
+      title: "Kredit Kepemilikan Rumah",
+      description: "Dapatkan solusi KPR untuk kebutuhan properti Anda dengan suku bunga kompetitif dan proses yang mudah",
       icon: <Home className="text-fundax-blue" size={32} />
     },
     {
-      title: "Deposito",
-      description: "Simpan dan kembangkan dana Anda dengan bunga menarik dan pilihan jangka waktu fleksibel untuk memaksimalkan keuntungan",
-      icon: <PiggyBank className="text-fundax-blue" size={32} />
-    },
-    {
-      title: "Modal Usaha",
-      description: "Perluas bisnis Anda dengan solusi pendanaan fleksibel dan proses cepat untuk mendukung pertumbuhan usaha Anda",
+      title: "Modal Kerja",
+      description: "Solusi pendanaan fleksibel untuk mendukung pertumbuhan bisnis Anda dengan proses cepat",
       icon: <Briefcase className="text-fundax-blue" size={32} />
     },
     {
-      title: "Take Over",
-      description: "Pindahkan pinjaman Anda ke Fundax dan nikmati bunga lebih rendah serta persyaratan yang lebih menguntungkan",
-      icon: <Building className="text-fundax-blue" size={32} />
+      title: "Pinjaman Bridging",
+      description: "Pembiayaan jangka pendek untuk kebutuhan bridge financing dengan proses yang cepat dan fleksibel",
+      icon: <Building2 className="text-fundax-blue" size={32} />
     },
     {
-      title: "Kredit Tanpa Agunan",
-      description: "Dapatkan pinjaman tanpa jaminan dengan proses mudah dan cepat untuk berbagai kebutuhan mendesak Anda",
-      icon: <CreditCard className="text-fundax-blue" size={32} />
-    },
-    {
-      title: "Investasi",
-      description: "Raih tujuan keuangan jangka panjang Anda dengan berbagai pilihan investasi yang aman dan menguntungkan",
-      icon: <Target className="text-fundax-blue" size={32} />
+      title: "Kredit Multiguna",
+      description: "Pinjaman multiguna untuk berbagai kebutuhan keuangan Anda dengan jaminan properti",
+      icon: <KeyRound className="text-fundax-blue" size={32} />
     }
   ];
 
@@ -48,7 +38,7 @@ const ProductSection = () => {
         </div>
       </div>
       
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6 mt-6 sm:mt-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 md:gap-6 mt-6 sm:mt-8">
         {products.map((product, index) => (
           <ProductCard 
             key={index}

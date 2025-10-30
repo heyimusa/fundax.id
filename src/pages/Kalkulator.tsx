@@ -7,7 +7,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs"
 import KprCalculator from '../components/kalkulator/KprCalculator';
 import TakeOverCalculator from '../components/kalkulator/TakeOverCalculator';
 import MultigunaCalculator from '../components/kalkulator/MultigunaCalculator';
-import DepositoCalculator from '../components/kalkulator/DepositoCalculator';
 
 const Kalkulator = () => {
   return (
@@ -18,7 +17,7 @@ const Kalkulator = () => {
         
         {/* Tab utama */}
         <Tabs defaultValue="KPR" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 mb-6 h-auto p-1 bg-muted">
+          <TabsList className="grid w-full grid-cols-3 mb-6 h-auto p-1 bg-muted">
             <TabsTrigger 
               value="KPR" 
               className="data-[state=active]:bg-fundax-blue data-[state=active]:text-white transition-all"
@@ -37,12 +36,6 @@ const Kalkulator = () => {
             >
               MULTIGUNA
             </TabsTrigger>
-            <TabsTrigger 
-              value="DEPOSITO" 
-              className="data-[state=active]:bg-fundax-blue data-[state=active]:text-white transition-all"
-            >
-              DEPOSITO
-            </TabsTrigger>
           </TabsList>
           
           <TabsContent value="KPR">
@@ -55,10 +48,6 @@ const Kalkulator = () => {
           
           <TabsContent value="MULTIGUNA">
             <MultigunaCalculator />
-          </TabsContent>
-          
-          <TabsContent value="DEPOSITO">
-            <DepositoCalculator />
           </TabsContent>
         </Tabs>
       </div>

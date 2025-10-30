@@ -68,20 +68,20 @@ const features = [
   {
     icon: <Shield size={32} />,
     title: "Aman & Terpercaya",
-    description: "Terdaftar resmi di OJK dan memiliki sertifikasi ISO 27001:2022 untuk keamanan data",
-    stat: "Sertifikasi ISO 27001:2022"
+    description: "Tim profesional berpengalaman dengan komitmen terhadap integritas dan keamanan data klien",
+    stat: "Profesional & Terpercaya"
   },
   {
     icon: <Building2 size={32} />,
-    title: "Akses ke 30+ Lender",
-    description: "Ribuan produk pinjaman dari bank dan lembaga keuangan terpercaya",
-    stat: "30+ Partner"
+    title: "Akses ke Banyak Lender",
+    description: "Jaringan luas dengan berbagai bank dan lembaga keuangan terpercaya",
+    stat: "Network Luas"
   },
   {
     icon: <Users size={32} />,
-    title: "24 Kantor Cabang",
-    description: "Tersebar di kota-kota besar di Indonesia untuk melayani Anda lebih dekat",
-    stat: "24 Cabang"
+    title: "Tim Profesional",
+    description: "Tim berpengalaman lebih dari 15 tahun di dunia perbankan dan keuangan",
+    stat: "15+ Tahun Pengalaman"
   },
   {
     icon: <Clock size={32} />,
@@ -97,16 +97,16 @@ const features = [
   },
   {
     icon: <MessageSquare size={32} />,
-    title: "Support 24/7",
-    description: "Customer service siap membantu Anda kapan saja melalui berbagai channel",
-    stat: "24/7 Support"
+    title: "Support Responsif",
+    description: "Tim siap membantu Anda kapan saja melalui berbagai channel komunikasi",
+    stat: "Responsif"
   }
 ];
 
 const stats = [
-  { number: "10K+", label: "Klien Puas" },
-  { number: "30+", label: "Partner Lender" },
-  { number: "24", label: "Kantor Cabang" },
+  { number: "15+", label: "Tahun Pengalaman" },
+  { number: "2", label: "Advisor Profesional" },
+  { number: "100%", label: "Komitmen Pelayanan" },
   { number: "95%", label: "Tingkat Kepuasan" }
 ];
 
@@ -222,32 +222,21 @@ const WhyFundax = () => {
 
         {/* Trust Section */}
         <div className="bg-fundax-lightGray py-16">
-          <div className="container mx-auto px-4 max-w-7xl">
+          <div className="container mx-auto px-4 max-w-4xl">
             <div className="text-center mb-8">
               <h2 className="text-3xl md:text-4xl font-bold text-fundax-blue mb-4">
-                Terpercaya & Terlisensi
+                Terpercaya & Profesional
               </h2>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-              <Card className="border-0 shadow-lg">
-                <CardContent className="p-8 text-center">
-                  <Shield className="text-fundax-blue mx-auto mb-4" size={48} />
-                  <h3 className="text-xl font-semibold text-fundax-blue mb-2">
-                    Terdaftar di OJK
-                  </h3>
-                  <p className="text-fundax-grayText">
-                    Fundax terdaftar resmi di Otoritas Jasa Keuangan (OJK) dengan nomor registrasi S-194/IK.01/2025
-                  </p>
-                </CardContent>
-              </Card>
+            <div className="grid grid-cols-1 md:grid-cols-1 gap-8 max-w-2xl mx-auto">
               <Card className="border-0 shadow-lg">
                 <CardContent className="p-8 text-center">
                   <Award className="text-fundax-blue mx-auto mb-4" size={48} />
                   <h3 className="text-xl font-semibold text-fundax-blue mb-2">
-                    ISO 27001:2022 Certified
+                    Komitmen Profesionalisme
                   </h3>
                   <p className="text-fundax-grayText">
-                    Kami memiliki sertifikasi ISO 27001:2022 untuk menjamin keamanan data dan informasi klien
+                    Dengan pengalaman lebih dari 15 tahun di dunia perbankan dan keuangan, kami berkomitmen memberikan layanan terbaik dengan integritas dan profesionalisme tinggi
                   </p>
                 </CardContent>
               </Card>

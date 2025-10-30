@@ -22,7 +22,7 @@ const Hero = () => {
             Penuhi Kebutuhan Finansial Bersama Kami
           </div>
           <div className="text-white text-sm sm:text-base font-medium leading-6">
-            Fundax Adviser kami siap membantu memenuhi kebutuhan Finansial Anda dalam bentuk kredit, modal usaha, deposito, investasi, hingga take over. Konsultasikan dengan ahlinya untuk mendapatkan pelayanan terbaik
+            Fundax Adviser kami siap membantu memenuhi kebutuhan finansial Anda dalam bentuk kredit kepemilikan rumah, modal kerja, pinjaman bridging, kredit multiguna, dan pemasaran asset. Konsultasikan dengan ahlinya untuk mendapatkan pelayanan terbaik
           </div>
         </div>
         
