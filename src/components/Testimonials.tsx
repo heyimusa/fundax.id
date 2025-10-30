@@ -9,6 +9,12 @@ import {
   CarouselPrevious,
 } from '../components/ui/carousel';
 
+// Testimonial images
+import renaldiImg from '../assets/images/testimonials/renaldi.svg';
+import ridwanImg from '../assets/images/testimonials/ridwan.svg';
+import sitiImg from '../assets/images/testimonials/siti-nurhaliza.svg';
+import ahmadImg from '../assets/images/testimonials/ahmad-fauzi.svg';
+
 interface Testimonial {
   id: string;
   name: string;
@@ -27,7 +33,7 @@ const testimonials: Testimonial[] = [
     office: 'Loan Market Prioritas (Erry Elmar & Conny Rahardja)',
     rating: 5,
     quote: 'Dengan menggunakan jasa Fundax, saya merasa sangat terbantu dalam mengembangkan usaha saya. Fundax memberikan solusi dan pilihan bank yang tepat untuk kebutuhan bisnis saya. Dalam waktu kurang dari 3 bulan, Fundax berhasil memberikan solusi terbaik yang memungkinkan usaha saya berkembang secara maksimal tanpa perlu repot mencari-cari bank yang sesuai. Fundax telah memberikan solusi terbaik dari segi bunga, jangka waktu, dan produk pinjaman yang cocok.',
-    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=faces'
+    image: renaldiImg
   },
   {
     id: '2',
@@ -36,7 +42,7 @@ const testimonials: Testimonial[] = [
     office: 'Loan Market Harmony (Maria Sari)',
     rating: 5,
     quote: 'Saya mengenal Fundax melalui Ibu Maria. Saya mempercayakan proses KPR takeover saya kepada beliau, dan hasilnya sangat memuaskan: KPR saya berhasil ditakeover dengan bunga yang lebih rendah dan jangka waktu yang lebih singkat. Saya sangat berterima kasih kepada tim Fundax Harmony atas kerja sama yang luar biasa dan bantuan mereka yang tak ternilai. Saya sangat puas dengan hasilnya.',
-    image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=faces'
+    image: ridwanImg
   },
   {
     id: '3',
@@ -45,7 +51,7 @@ const testimonials: Testimonial[] = [
     office: 'Jakarta',
     rating: 5,
     quote: 'Proses pengajuan modal usaha melalui Fundax sangat mudah dan cepat. Loan Adviser membantu saya mendapatkan produk terbaik dengan bunga yang kompetitif. Terima kasih Fundax!',
-    image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop&crop=faces'
+    image: sitiImg
   },
   {
     id: '4',
@@ -54,7 +60,7 @@ const testimonials: Testimonial[] = [
     office: 'Bandung',
     rating: 5,
     quote: 'KPR untuk rumah pertama saya berhasil disetujui dalam waktu singkat berkat bantuan tim Fundax. Prosesnya transparan dan Loan Adviser sangat responsif menjawab pertanyaan saya.',
-    image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=faces'
+    image: ahmadImg
   }
 ];
 

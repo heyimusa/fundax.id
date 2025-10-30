@@ -1,0 +1,11 @@
+<svg width="150" height="80" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0066CC;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3399FF;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="150" height="80" fill="white" rx="4"/>
+  <rect x="5" y="5" width="140" height="70" fill="url(#logoGrad)" rx="4" opacity="0.1"/>
+  <text x="75" y="40" font-family="Arial, sans-serif" font-size="13.333333333333334" font-weight="bold" fill="#0066CC" text-anchor="middle" dominant-baseline="middle">BNI</text>
+</svg>

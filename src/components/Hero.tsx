@@ -1,5 +1,6 @@
 
 import React from 'react';
+import heroImage from '../assets/images/hero/hero-financial-services.svg';
 
 const Hero = () => {
   return (
@@ -7,7 +8,7 @@ const Hero = () => {
       <div className="absolute top-0 right-0 bottom-0 left-0">
         <div className="w-full h-full bg-[#D9D9D9]">
           <img 
-            src="https://images.unsplash.com/photo-1560520031-3a4dc4e9de0c?q=80&w=1973&auto=format&fit=crop" 
+            src={heroImage} 
             alt="Financial services" 
             className="w-full h-full object-cover"
           />
@@ -21,7 +22,7 @@ const Hero = () => {
             Penuhi Kebutuhan Finansial Bersama Kami
           </div>
           <div className="text-white text-sm sm:text-base font-medium leading-6">
-            Fundax Adviser kami siap membantu memenuhi kebutuhan Finansial Anda dalam bentuk kredit, modal usaha, deposito, investasi, hingga take over. Konsultasikan dengan ahlinya untuk mendapatkan pelayanan terbaik
+            Fundax Adviser kami siap membantu memenuhi kebutuhan finansial Anda dalam bentuk kredit kepemilikan rumah, modal kerja, pinjaman bridging, kredit multiguna, dan pemasaran asset. Konsultasikan dengan ahlinya untuk mendapatkan pelayanan terbaik
           </div>
         </div>
         

@@ -1,13 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import ProductCard from '../components/ProductCard';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
-import { Badge } from '../components/ui/badge';
-import { Checkbox } from '../components/ui/checkbox';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
-import { Home, PiggyBank, Briefcase, Building, CreditCard, Target, GitCompare, X, ArrowRight } from 'lucide-react';
+import { Home, Briefcase, Building2, KeyRound, Handshake, MessageSquare, Scale, Gavel, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 interface Product {
@@ -25,11 +21,19 @@ interface Product {
   suitableFor: string[];
 }
 
+interface ConsultationService {
+  id: string;
+  title: string;
+  description: string;
+  icon: React.ReactNode;
+  details: string[];
+}
+
 const products: Product[] = [
   {
-    id: 'kpr-multiguna',
-    title: 'KPR & Multiguna',
-    description: 'Dapatkan solusi KPR dan pinjaman multiguna untuk kebutuhan properti dan keuangan Anda dengan suku bunga kompetitif',
+    id: 'kpr',
+    title: 'Kredit Kepemilikan Rumah',
+    description: 'Dapatkan solusi KPR untuk kebutuhan properti Anda dengan suku bunga kompetitif dan proses yang mudah',
     icon: <Home className="text-fundax-blue" size={32} />,
     category: 'Pinjaman',
     features: [
@@ -52,47 +56,19 @@ const products: Product[] = [
     suitableFor: [
       'Pembelian rumah pertama',
       'Refinancing properti',
-      'Kebutuhan dana tunai'
+      'Kebutuhan properti'
     ]
   },
   {
-    id: 'deposito',
-    title: 'Deposito',
-    description: 'Simpan dan kembangkan dana Anda dengan bunga menarik dan pilihan jangka waktu fleksibel untuk memaksimalkan keuntungan',
-    icon: <PiggyBank className="text-fundax-blue" size={32} />,
-    category: 'Tabungan',
-    features: [
-      'Bunga menarik hingga 6%',
-      'Jaminan LPS',
-      'Tenor fleksibel',
-      'Bisa dijadikan agunan',
-      'Minimal deposit rendah'
-    ],
-    minAmount: 'Rp 10 Juta',
-    maxAmount: 'Tak terbatas',
-    interestRate: '4% - 6% per tahun',
-    tenure: '1 bulan - 24 bulan',
-    requirements: [
-      'KTP',
-      'NPWP',
-      'Buku tabungan'
-    ],
-    suitableFor: [
-      'Investasi jangka pendek',
-      'Dana darurat',
-      'Planing keuangan'
-    ]
-  },
-  {
-    id: 'modal-usaha',
-    title: 'Modal Usaha',
-    description: 'Perluas bisnis Anda dengan solusi pendanaan fleksibel dan proses cepat untuk mendukung pertumbuhan usaha Anda',
+    id: 'modal-kerja',
+    title: 'Modal Kerja',
+    description: 'Solusi pendanaan fleksibel untuk mendukung pertumbuhan bisnis Anda dengan proses cepat',
     icon: <Briefcase className="text-fundax-blue" size={32} />,
     category: 'Pinjaman',
     features: [
       'Plafon tinggi hingga Rp 2 Miliar',
       'Proses cepat 3-5 hari kerja',
-      'Tanpa agunan untuk plafon tertentu',
+      'Tenor fleksibel',
       'Cicilan fleksibel',
       'Support konsultasi bisnis'
     ],
@@ -113,117 +89,123 @@ const products: Product[] = [
     ]
   },
   {
-    id: 'take-over',
-    title: 'Take Over',
-    description: 'Pindahkan pinjaman Anda ke Fundax dan nikmati bunga lebih rendah serta persyaratan yang lebih menguntungkan',
-    icon: <Building className="text-fundax-blue" size={32} />,
+    id: 'bridging',
+    title: 'Pinjaman Bridging',
+    description: 'Pembiayaan jangka pendek untuk kebutuhan bridge financing dengan proses yang cepat dan fleksibel',
+    icon: <Building2 className="text-fundax-blue" size={32} />,
     category: 'Pinjaman',
     features: [
-      'Bunga lebih rendah',
-      'Tenor bisa diperpanjang',
-      'Cicilan lebih ringan',
       'Proses cepat',
-      'Biaya administrasi rendah'
+      'Jangka pendek',
+      'Fleksibel',
+      'Cocok untuk transisi',
+      'Solusi bridge financing'
     ],
     minAmount: 'Rp 100 Juta',
     maxAmount: 'Rp 5 Miliar',
-    interestRate: '3% - 7% per tahun',
-    tenure: 'Sesuai sisa tenor',
+    interestRate: '10% - 18% per tahun',
+    tenure: '6 bulan - 2 tahun',
     requirements: [
       'NPWP',
       'KTP',
-      'Surat keterangan dari bank lama',
-      'Kartu pinjaman aktif'
+      'Dokumen properti',
+      'Rencana refinancing'
     ],
     suitableFor: [
-      'Pinjaman KPR',
-      'Pinjaman multiguna',
-      'Pinjaman usaha'
+      'Bridge financing',
+      'Transisi pembiayaan',
+      'Kebutuhan jangka pendek'
     ]
   },
   {
-    id: 'kredit-tanpa-agunan',
-    title: 'Kredit Tanpa Agunan',
-    description: 'Dapatkan pinjaman tanpa jaminan dengan proses mudah dan cepat untuk berbagai kebutuhan mendesak Anda',
-    icon: <CreditCard className="text-fundax-blue" size={32} />,
+    id: 'multiguna',
+    title: 'Kredit Multiguna',
+    description: 'Pinjaman multiguna untuk berbagai kebutuhan keuangan Anda dengan jaminan properti',
+    icon: <KeyRound className="text-fundax-blue" size={32} />,
     category: 'Pinjaman',
     features: [
-      'Tanpa agunan',
-      'Proses cepat 1-2 hari',
-      'Plafon hingga Rp 500 Juta',
-      'Cicilan fleksibel',
-      'Pencairan langsung'
+      'Plafon hingga 70% nilai properti',
+      'Tenor fleksibel',
+      'Bunga kompetitif',
+      'Berbagai tujuan penggunaan',
+      'Proses cepat'
     ],
-    minAmount: 'Rp 10 Juta',
-    maxAmount: 'Rp 500 Juta',
-    interestRate: '12% - 20% per tahun',
-    tenure: '6 bulan - 5 tahun',
+    minAmount: 'Rp 50 Juta',
+    maxAmount: 'Rp 5 Miliar',
+    interestRate: '3.5% - 8% per tahun',
+    tenure: '5 - 20 tahun',
     requirements: [
-      'KTP',
       'NPWP',
-      'Slip gaji',
-      'Kartu kredit (opsional)'
+      'KTP',
+      'Bukti kepemilikan properti',
+      'Slip gaji/keterangan penghasilan'
     ],
     suitableFor: [
-      'Kebutuhan mendesak',
-      'Konsolidasi utang',
-      'Modal usaha kecil'
-    ]
-  },
-  {
-    id: 'investasi',
-    title: 'Investasi',
-    description: 'Raih tujuan keuangan jangka panjang Anda dengan berbagai pilihan investasi yang aman dan menguntungkan',
-    icon: <Target className="text-fundax-blue" size={32} />,
-    category: 'Investasi',
-    features: [
-      'Diversifikasi portofolio',
-      'Manajemen profesional',
-      'Return kompetitif',
-      'Risk management',
-      'Laporan berkala'
-    ],
-    minAmount: 'Rp 10 Juta',
-    maxAmount: 'Tak terbatas',
-    interestRate: '7% - 15% per tahun',
-    tenure: '1 - 10 tahun',
-    requirements: [
-      'KTP',
-      'NPWP',
-      'Rekening bank'
-    ],
-    suitableFor: [
-      'Investasi jangka panjang',
-      'Dana pensiun',
-      'Kekayaan masa depan'
+      'Kebutuhan dana tunai',
+      'Renovasi properti',
+      'Berbagai kebutuhan finansial'
     ]
   }
 ];
 
-const categories = ['Semua', 'Pinjaman', 'Tabungan', 'Investasi'];
+const consultationServices: ConsultationService[] = [
+  {
+    id: 'gagal-bayar',
+    title: 'Konsultasi Gagal Bayar Kredit & Pendampingan',
+    description: 'Dapatkan solusi dan pendampingan profesional ketika mengalami kesulitan membayar kredit',
+    icon: <MessageSquare className="text-fundax-blue" size={40} />,
+    details: [
+      'Analisis situasi finansial',
+      'Rekomendasi solusi restrukturisasi',
+      'Pendampingan negosiasi dengan bank',
+      'Strategi penyelesaian yang tepat',
+      'Dukungan hingga selesai'
+    ]
+  },
+  {
+    id: 'take-over',
+    title: 'Konsultasi Take Over Kredit',
+    description: 'Bantuan konsultasi untuk proses take over kredit ke bank lain dengan kondisi yang lebih menguntungkan',
+    icon: <Scale className="text-fundax-blue" size={40} />,
+    details: [
+      'Analisis kredit saat ini',
+      'Pencarian opsi bank terbaik',
+      'Perbandingan produk dan bunga',
+      'Pendampingan proses take over',
+      'Negosiasi syarat yang lebih baik'
+    ]
+  },
+  {
+    id: 'lelang',
+    title: 'Konsultasi Lelang, Eksekusi & Hak Tanggungan',
+    description: 'Pendampingan profesional untuk proses lelang, eksekusi, dan pengurusan hak tanggungan',
+    icon: <Gavel className="text-fundax-blue" size={40} />,
+    details: [
+      'Pemahaman proses lelang',
+      'Strategi menghadapi eksekusi',
+      'Pengurusan hak tanggungan',
+      'Pendampingan legal',
+      'Solusi terbaik untuk situasi Anda'
+    ]
+  },
+  {
+    id: 'pemasaran-asset',
+    title: 'Konsultasi Pemasaran Asset',
+    description: 'Konsultasi dan pendampingan untuk pemasaran aset properti seperti Residential, Shop House, dan lainnya',
+    icon: <Handshake className="text-fundax-blue" size={40} />,
+    details: [
+      'Jasa pemasaran properti',
+      'Residential & Shop House',
+      'Valuasi properti',
+      'Konsultasi strategi',
+      'Pendampingan transaksi'
+    ]
+  }
+];
 
 const Produk = () => {
-  const [selectedCategory, setSelectedCategory] = useState('Semua');
-  const [selectedProducts, setSelectedProducts] = useState<Set<string>>(new Set());
-  const [showComparison, setShowComparison] = useState(false);
-
-  const filteredProducts = selectedCategory === 'Semua'
-    ? products
-    : products.filter(p => p.category === selectedCategory);
-
-  const handleProductToggle = (productId: string) => {
-    const newSelected = new Set(selectedProducts);
-    if (newSelected.has(productId)) {
-      newSelected.delete(productId);
-    } else {
-      if (newSelected.size < 3) {
-        newSelected.add(productId);
-      }
-    }
-    setSelectedProducts(newSelected);
-  };
-
-  const comparisonProducts = products.filter(p => selectedProducts.has(p.id));
+  // Products are always loan products
+  const loanProducts = products.filter(p => p.category === 'Pinjaman');
 
   return (
     <div className="min-h-screen w-full bg-white font-inter flex flex-col">
@@ -233,266 +215,127 @@ const Produk = () => {
         {/* Header Section */}
         <div className="text-center mb-8">
           <h1 className="text-3xl md:text-4xl font-bold text-fundax-blue mb-4">
-            Produk Kami
+            Produk & Layanan Kami
           </h1>
           <p className="text-lg text-fundax-grayText max-w-2xl mx-auto">
-            Kami menyediakan berbagai macam produk finansial untuk memenuhi kebutuhan Anda. 
-            Silakan jelajahi pilihan produk kami untuk menemukan solusi yang tepat.
+            Kami menyediakan berbagai produk pinjaman dan layanan konsultasi untuk memenuhi kebutuhan finansial Anda.
           </p>
         </div>
 
-        {/* Comparison Bar */}
-        {selectedProducts.size > 0 && (
-          <div className="mb-6 bg-fundax-lightGray rounded-lg p-4 flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <GitCompare className="text-fundax-blue" size={20} />
-              <span className="font-medium text-fundax-blue">
-                {selectedProducts.size} produk dipilih untuk perbandingan
-              </span>
-              {selectedProducts.size < 3 && (
-                <span className="text-sm text-fundax-grayText">
-                  (Pilih maksimal 3 produk)
-                </span>
-              )}
-            </div>
-            <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  setShowComparison(!showComparison);
-                }}
-                className="border-fundax-blue text-fundax-blue"
-              >
-                {showComparison ? 'Sembunyikan' : 'Lihat'} Perbandingan
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setSelectedProducts(new Set())}
-                className="text-fundax-grayText"
-              >
-                <X size={16} />
-              </Button>
-            </div>
+        {/* Products Section */}
+        <div className="mb-12">
+          <h2 className="text-2xl font-bold text-fundax-blue mb-6">Produk Pinjaman</h2>
+          <p className="text-fundax-grayText mb-6 max-w-3xl">
+            Pilih produk pinjaman yang sesuai dengan kebutuhan finansial Anda
+          </p>
+
+          {/* Product Grid - 2x2 layout for 4 products */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {loanProducts.map((product) => (
+              <Card key={product.id} className="hover:shadow-lg transition-shadow">
+                <CardHeader>
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="w-16 h-16 flex items-center justify-center bg-fundax-lightGray rounded-full flex-shrink-0">
+                      {product.icon}
+                    </div>
+                    <div className="flex-1">
+                      <CardTitle className="text-fundax-blue mb-2">{product.title}</CardTitle>
+                      <CardDescription className="text-sm">{product.description}</CardDescription>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3 mb-4">
+                    <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                      <span className="text-sm font-medium text-fundax-grayText">Bunga</span>
+                      <span className="text-sm text-fundax-blue font-semibold">{product.interestRate}</span>
+                    </div>
+                    <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                      <span className="text-sm font-medium text-fundax-grayText">Plafon</span>
+                      <span className="text-sm">{product.minAmount} - {product.maxAmount}</span>
+                    </div>
+                    <div className="flex justify-between items-center py-2">
+                      <span className="text-sm font-medium text-fundax-grayText">Tenor</span>
+                      <span className="text-sm">{product.tenure}</span>
+                    </div>
+                  </div>
+                  <Button asChild className="w-full bg-fundax-blue hover:bg-fundax-blue/90">
+                    <Link to="/ajukan">
+                      Ajukan Sekarang <ArrowRight size={16} className="ml-2" />
+                    </Link>
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
           </div>
-        )}
-
-        {/* Comparison Table */}
-        {showComparison && comparisonProducts.length > 0 && (
-          <Card className="mb-8">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <GitCompare className="text-fundax-blue" size={20} />
-                Perbandingan Produk
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="overflow-x-auto">
-                <table className="w-full border-collapse">
-                  <thead>
-                    <tr className="border-b">
-                      <th className="text-left p-3 font-semibold text-fundax-blue">Fitur</th>
-                      {comparisonProducts.map(product => (
-                        <th key={product.id} className="text-left p-3 font-semibold text-fundax-blue">
-                          {product.title}
-                        </th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr className="border-b">
-                      <td className="p-3 font-medium">Bunga</td>
-                      {comparisonProducts.map(product => (
-                        <td key={product.id} className="p-3">{product.interestRate}</td>
-                      ))}
-                    </tr>
-                    <tr className="border-b">
-                      <td className="p-3 font-medium">Plafon Minimum</td>
-                      {comparisonProducts.map(product => (
-                        <td key={product.id} className="p-3">{product.minAmount}</td>
-                      ))}
-                    </tr>
-                    <tr className="border-b">
-                      <td className="p-3 font-medium">Plafon Maksimum</td>
-                      {comparisonProducts.map(product => (
-                        <td key={product.id} className="p-3">{product.maxAmount}</td>
-                      ))}
-                    </tr>
-                    <tr className="border-b">
-                      <td className="p-3 font-medium">Jangka Waktu</td>
-                      {comparisonProducts.map(product => (
-                        <td key={product.id} className="p-3">{product.tenure}</td>
-                      ))}
-                    </tr>
-                    <tr>
-                      <td className="p-3 font-medium">Kategori</td>
-                      {comparisonProducts.map(product => (
-                        <td key={product.id} className="p-3">
-                          <Badge variant="outline">{product.category}</Badge>
-                        </td>
-                      ))}
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Category Filter */}
-        <div className="flex flex-wrap gap-2 mb-6">
-          {categories.map(category => (
-            <Button
-              key={category}
-              variant={selectedCategory === category ? 'default' : 'outline'}
-              className={selectedCategory === category ? 'bg-fundax-blue text-white' : ''}
-              onClick={() => setSelectedCategory(category)}
-            >
-              {category}
-            </Button>
-          ))}
         </div>
 
-        {/* Product Grid */}
-        <Tabs defaultValue="grid" className="w-full">
-          <TabsList className="mb-6">
-            <TabsTrigger value="grid">Grid View</TabsTrigger>
-            <TabsTrigger value="detail">Detail View</TabsTrigger>
-          </TabsList>
+        {/* Consultation Services Section */}
+        <div className="bg-fundax-lightGray py-12 rounded-lg">
+          <div className="px-4">
+            <h2 className="text-2xl font-bold text-fundax-blue mb-2 text-center">
+              Layanan Konsultasi Inovatif
+            </h2>
+            <p className="text-fundax-grayText text-center mb-8 max-w-2xl mx-auto">
+              Layanan konsultasi profesional untuk membantu Anda mengatasi berbagai tantangan finansial
+            </p>
 
-          <TabsContent value="grid">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredProducts.map(product => (
-                <Card
-                  key={product.id}
-                  className="relative hover:shadow-lg transition-shadow cursor-pointer"
-                >
-                  <div className="absolute top-4 right-4">
-                    <Checkbox
-                      checked={selectedProducts.has(product.id)}
-                      onCheckedChange={() => handleProductToggle(product.id)}
-                      disabled={selectedProducts.size >= 3 && !selectedProducts.has(product.id)}
-                    />
-                  </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {consultationServices.map((service) => (
+                <Card key={service.id} className="border-0 shadow-lg hover:shadow-xl transition-shadow">
                   <CardHeader>
-                    <div className="flex items-center gap-4 mb-4">
-                      <div className="w-16 h-16 flex items-center justify-center bg-fundax-lightGray rounded-full">
-                        {product.icon}
-                      </div>
-                      <div>
-                        <CardTitle className="text-fundax-blue">{product.title}</CardTitle>
-                        <Badge variant="outline" className="mt-1">{product.category}</Badge>
-                      </div>
+                    <div className="w-16 h-16 bg-fundax-blue rounded-lg flex items-center justify-center text-white mb-4">
+                      {service.icon}
                     </div>
-                    <CardDescription>{product.description}</CardDescription>
+                    <CardTitle className="text-lg text-fundax-blue mb-2">
+                      {service.title}
+                    </CardTitle>
+                    <CardDescription className="text-sm leading-relaxed">
+                      {service.description}
+                    </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="space-y-3 mb-4">
-                      <div>
-                        <span className="text-sm font-medium text-fundax-grayText">Bunga: </span>
-                        <span className="text-sm text-fundax-blue font-semibold">{product.interestRate}</span>
-                      </div>
-                      <div>
-                        <span className="text-sm font-medium text-fundax-grayText">Plafon: </span>
-                        <span className="text-sm">{product.minAmount} - {product.maxAmount}</span>
-                      </div>
-                    </div>
-                    <Button asChild className="w-full bg-fundax-blue hover:bg-fundax-blue/90">
-                      <Link to={`/produk/${product.id}`}>
-                        Pelajari Lebih Lanjut <ArrowRight size={16} className="ml-2" />
+                    <ul className="space-y-2 mb-4">
+                      {service.details.map((detail, idx) => (
+                        <li key={idx} className="flex items-start gap-2 text-sm">
+                          <span className="text-fundax-blue mt-0.5 font-semibold">✓</span>
+                          <span className="text-fundax-grayText">{detail}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <Button asChild className="w-full mt-4 bg-fundax-blue hover:bg-fundax-blue/90">
+                      <Link to="/fundax-advisor">
+                        Konsultasi Sekarang
                       </Link>
                     </Button>
                   </CardContent>
                 </Card>
               ))}
             </div>
-          </TabsContent>
+          </div>
+        </div>
 
-          <TabsContent value="detail">
-            <div className="space-y-6">
-              {filteredProducts.map(product => (
-                <Card key={product.id} className="relative">
-                  <div className="absolute top-4 right-4">
-                    <Checkbox
-                      checked={selectedProducts.has(product.id)}
-                      onCheckedChange={() => handleProductToggle(product.id)}
-                      disabled={selectedProducts.size >= 3 && !selectedProducts.has(product.id)}
-                    />
-                  </div>
-                  <CardHeader>
-                    <div className="flex items-start gap-4">
-                      <div className="w-20 h-20 flex items-center justify-center bg-fundax-lightGray rounded-full flex-shrink-0">
-                        {product.icon}
-                      </div>
-                      <div className="flex-1">
-                        <div className="flex items-center gap-3 mb-2">
-                          <CardTitle className="text-2xl text-fundax-blue">{product.title}</CardTitle>
-                          <Badge variant="outline">{product.category}</Badge>
-                        </div>
-                        <CardDescription className="text-base">{product.description}</CardDescription>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div>
-                        <h3 className="font-semibold text-fundax-blue mb-3">Keunggulan</h3>
-                        <ul className="space-y-2">
-                          {product.features.map((feature, idx) => (
-                            <li key={idx} className="flex items-start gap-2 text-sm">
-                              <span className="text-fundax-blue mt-1">✓</span>
-                              <span>{feature}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                      <div>
-                        <h3 className="font-semibold text-fundax-blue mb-3">Informasi Produk</h3>
-                        <div className="space-y-2 text-sm">
-                          <div className="flex justify-between">
-                            <span className="text-fundax-grayText">Bunga:</span>
-                            <span className="font-medium">{product.interestRate}</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-fundax-grayText">Plafon:</span>
-                            <span className="font-medium">{product.minAmount} - {product.maxAmount}</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-fundax-grayText">Jangka Waktu:</span>
-                            <span className="font-medium">{product.tenure}</span>
-                          </div>
-                        </div>
-                        <div className="mt-4">
-                          <h4 className="font-semibold text-fundax-blue mb-2 text-sm">Cocok Untuk:</h4>
-                          <div className="flex flex-wrap gap-2">
-                            {product.suitableFor.map((item, idx) => (
-                              <Badge key={idx} variant="outline" className="text-xs">
-                                {item}
-                              </Badge>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="mt-6 pt-6 border-t flex gap-4">
-                      <Button asChild className="bg-fundax-blue hover:bg-fundax-blue/90">
-                        <Link to="/ajukan">
-                          Ajukan Sekarang
-                        </Link>
-                      </Button>
-                      <Button variant="outline" asChild>
-                        <Link to={`/produk/${product.id}`}>
-                          Detail Lengkap
-                        </Link>
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </TabsContent>
-        </Tabs>
+        {/* CTA Section */}
+        <div className="mt-12 text-center">
+          <h2 className="text-2xl font-bold text-fundax-blue mb-4">
+            Butuh Bantuan Memilih Produk?
+          </h2>
+          <p className="text-fundax-grayText mb-6 max-w-2xl mx-auto">
+            Hubungi advisor kami untuk konsultasi gratis dan temukan solusi terbaik untuk kebutuhan Anda
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button asChild size="lg" className="bg-fundax-blue hover:bg-fundax-blue/90">
+              <Link to="/fundax-advisor">
+                Hubungi Advisor
+              </Link>
+            </Button>
+            <Button asChild size="lg" variant="outline" className="border-fundax-blue text-fundax-blue">
+              <Link to="/ajukan">
+                Ajukan Pinjaman
+              </Link>
+            </Button>
+          </div>
+        </div>
       </div>
 
       <Footer />
