@@ -1,2 +1,0 @@
-export CURL_CONNECT_TIMEOUT='90'
-export CURL_TIMEOUT='600'
