@@ -26,10 +26,10 @@ const Hero = () => {
         </div>
         
         <div className="flex items-center gap-4 sm:gap-6">
-          <button className="bg-fundax-blue text-white px-4 sm:px-5 py-2 sm:py-2.5 rounded-md text-sm whitespace-nowrap">
+          <button className="bg-fundax-blue text-white px-4 sm:px-5 py-2 sm:py-2.5 rounded-md text-sm whitespace-nowrap transition-all duration-200 hover:bg-fundax-blue/90 hover:shadow-lg hover:scale-105 active:scale-100">
             Ajukan
           </button>
-          <button className="bg-fundax-lightGray text-fundax-blue px-4 sm:px-5 py-2 sm:py-2.5 rounded-md text-sm whitespace-nowrap">
+          <button className="bg-fundax-lightGray text-fundax-blue px-4 sm:px-5 py-2 sm:py-2.5 rounded-md text-sm whitespace-nowrap transition-all duration-200 hover:bg-white hover:shadow-md hover:scale-105 active:scale-100 border border-transparent hover:border-fundax-blue/20">
             Konsultasi
           </button>
         </div>

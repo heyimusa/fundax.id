@@ -12,6 +12,10 @@ import WhyFundax from "./pages/WhyFundax";
 import Bisnis from "./pages/Bisnis";
 import Berita from "./pages/Berita";
 import TentangKami from "./pages/TentangKami";
+import Ajukan from "./pages/Ajukan";
+import ApplicationTracking from "./pages/ApplicationTracking";
+import Karir from "./pages/Karir";
+import Referral from "./pages/Referral";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -31,6 +35,10 @@ const App = () => (
           <Route path="/bisnis" element={<Bisnis />} />
           <Route path="/berita" element={<Berita />} />
           <Route path="/tentang-kami" element={<TentangKami />} />
+          <Route path="/ajukan" element={<Ajukan />} />
+          <Route path="/application-tracking" element={<ApplicationTracking />} />
+          <Route path="/karir" element={<Karir />} />
+          <Route path="/referral" element={<Referral />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

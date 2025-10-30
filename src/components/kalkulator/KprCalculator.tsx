@@ -4,15 +4,18 @@ import { Label } from "../ui/label";
 import { Checkbox } from "../ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { Button } from "../ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
 import { formatCurrency } from "../../lib/utils";
 
 const KprCalculator = () => {
-  const [activeTab, setActiveTab] = useState<string>("KPR");
+  // Page-level tabs exist in `src/pages/Kalkulator.tsx`; avoid duplicating here
   const [activeResultTab, setActiveResultTab] = useState<string>("HASIL_KPR");
   const [pendapatanBulanan, setPendapatanBulanan] = useState<number>(5000000);
+  const [pendapatanBulananText, setPendapatanBulananText] = useState<string>((5000000).toLocaleString("id-ID"));
   const [usia, setUsia] = useState<number>(25);
   const [lamaPinjaman, setLamaPinjaman] = useState<number>(15);
   const [jumlahCicilan, setJumlahCicilan] = useState<number>(1500000);
+  const [jumlahCicilanText, setJumlahCicilanText] = useState<string>((1500000).toLocaleString("id-ID"));
   const [sukuBungaFix, setSukuBungaFix] = useState<number>(3);
   const [masaTahunFix, setMasaTahunFix] = useState<number>(5);
   const [sukuBungaFloating, setSukuBungaFloating] = useState<number>(8);
@@ -30,28 +33,40 @@ const KprCalculator = () => {
     angsuran: number;
     sisaPlafond: number;
   }>>([]);
+  const [hasCalculated, setHasCalculated] = useState<boolean>(false);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [rowsPerPage, setRowsPerPage] = useState<number>(12);
 
-  useEffect(() => {
-    hitungKPR();
-  }, [pendapatanBulanan, usia, lamaPinjaman, jumlahCicilan, sukuBungaFix, masaTahunFix, sukuBungaFloating, isBungaBergerak, tipeBungaAcuan, sukuBungaBerjenjang]);
+  // Helpers to format and parse currency-like inputs with dot grouping
+  const formatWithDots = (value: string | number): string => {
+    const num = typeof value === "number" ? value : parseInt(value.replace(/\D/g, "")) || 0;
+    return num.toLocaleString("id-ID");
+  };
+
+  const parseDigits = (value: string): number => {
+    const onlyDigits = value.replace(/\D/g, "");
+    return onlyDigits ? parseInt(onlyDigits) : 0;
+  };
 
   useEffect(() => {
     if (isBungaBergerak) {
       // Pastikan array sukuBungaBerjenjang memiliki panjang yang sesuai dengan lamaPinjaman
-      const newSukuBungaBerjenjang = [...sukuBungaBerjenjang];
-      
-      // Jika array terlalu pendek, tambahkan nilai
-      while (newSukuBungaBerjenjang.length < lamaPinjaman) {
-        // Gunakan nilai terakhir atau default 3.0
-        newSukuBungaBerjenjang.push(newSukuBungaBerjenjang[newSukuBungaBerjenjang.length - 1] || 3.0);
-      }
-      
-      // Jika array terlalu panjang, potong
-      if (newSukuBungaBerjenjang.length > lamaPinjaman) {
-        newSukuBungaBerjenjang.length = lamaPinjaman;
-      }
-      
-      setSukuBungaBerjenjang(newSukuBungaBerjenjang);
+      setSukuBungaBerjenjang((prev) => {
+        const newSukuBungaBerjenjang = [...prev];
+        
+        // Jika array terlalu pendek, tambahkan nilai
+        while (newSukuBungaBerjenjang.length < lamaPinjaman) {
+          // Gunakan nilai terakhir atau default 3.0
+          newSukuBungaBerjenjang.push(newSukuBungaBerjenjang[newSukuBungaBerjenjang.length - 1] || 3.0);
+        }
+        
+        // Jika array terlalu panjang, potong
+        if (newSukuBungaBerjenjang.length > lamaPinjaman) {
+          newSukuBungaBerjenjang.length = lamaPinjaman;
+        }
+        
+        return newSukuBungaBerjenjang;
+      });
     }
   }, [lamaPinjaman, isBungaBergerak]);
 
@@ -73,12 +88,30 @@ const KprCalculator = () => {
     }
   };
 
-  const hitungKPR = () => {
+  const hitungKPR = React.useCallback(() => {
     try {
-      // Hitung maksimal limit pinjaman
       const tenorBulan = lamaPinjaman * 12;
-      const maksimalPinjaman = jumlahCicilan * tenorBulan;
-      setMaksimalLimitPinjaman(maksimalPinjaman);
+
+      // Perhitungan untuk mode tidak berjenjang (fixed -> floating)
+      // Gunakan pembayaran input (jumlahCicilan) sebagai cicilan masa fixed.
+      // Hitung plafon awal menggunakan rumus anuitas pada suku bunga fixed dan tenor penuh.
+      const rFix = sukuBungaFix / 100 / 12;
+      const rFloat = sukuBungaFloating / 100 / 12;
+      const masaBulanFix = Math.min(masaTahunFix * 12, tenorBulan);
+
+      let plafonAwal = 0;
+      if (!isBungaBergerak) {
+        if (rFix > 0) {
+          plafonAwal = jumlahCicilan * (1 - Math.pow(1 + rFix, -tenorBulan)) / rFix;
+        } else {
+          plafonAwal = jumlahCicilan * tenorBulan;
+        }
+      } else {
+        // Untuk mode berjenjang, gunakan pendekatan sederhana plafon tanpa bunga
+        plafonAwal = jumlahCicilan * tenorBulan;
+      }
+
+      setMaksimalLimitPinjaman(Math.max(0, Math.round(plafonAwal)));
 
       // Inisialisasi array tabel angsuran baru
       const newTabelAngsuran: Array<{
@@ -97,7 +130,7 @@ const KprCalculator = () => {
         }
         
         // Hitung angsuran dengan bunga berjenjang
-        let sisaPinjaman = maksimalPinjaman;
+        let sisaPinjaman = plafonAwal;
         
         // Untuk setiap bulan dalam tenor
         for (let bulanKe = 1; bulanKe <= tenorBulan; bulanKe++) {
@@ -130,420 +163,503 @@ const KprCalculator = () => {
         setAngsuranMasaFixedBunga(jumlahCicilan);
         setAngsuranMasaFloatingBunga(0); // Tidak ada floating bunga dalam mode berjenjang
       } else {
-        // Kode perhitungan untuk bunga fixed dan floating
-        let sisaPinjaman = maksimalPinjaman;
-        const sukuBungaBulananFix = sukuBungaFix / 100 / 12;
-        const sukuBungaBulananFloating = sukuBungaFloating / 100 / 12;
-        const masaBulanFix = Math.min(masaTahunFix * 12, tenorBulan);
-        
-        // Generate untuk masa fixed bunga
+        // Perhitungan anuitas untuk masa fixed, lalu hitung ulang cicilan ketika masuk masa floating
+        let sisaPinjaman = plafonAwal;
+
+        // Fase fixed: gunakan cicilan input "jumlahCicilan"
         for (let i = 1; i <= masaBulanFix; i++) {
-          const bungaBulanan = sisaPinjaman * sukuBungaBulananFix;
+          const bungaBulanan = sisaPinjaman * rFix;
           const angsuranPokok = jumlahCicilan - bungaBulanan;
-          sisaPinjaman -= angsuranPokok;
-          
+          sisaPinjaman = Math.max(0, sisaPinjaman - angsuranPokok);
           newTabelAngsuran.push({
             bulan: i,
             bunga: `${sukuBungaFix}%`,
             angsuran: jumlahCicilan,
-            sisaPlafond: sisaPinjaman > 0 ? sisaPinjaman : 0
+            sisaPlafond: sisaPinjaman
           });
         }
-        
-        // Generate untuk masa floating bunga
+
+        // Fase floating: hitung ulang cicilan agar lunas pada sisa tenor dengan rFloat
+        let cicilanFloating = jumlahCicilan;
         if (masaBulanFix < tenorBulan) {
-          for (let i = masaBulanFix + 1; i <= tenorBulan; i++) {
-            const bungaBulanan = sisaPinjaman * sukuBungaBulananFloating;
-            const angsuranPokok = jumlahCicilan - bungaBulanan;
-            sisaPinjaman -= angsuranPokok;
-            
+          const sisaTenor = tenorBulan - masaBulanFix;
+          if (rFloat > 0) {
+            cicilanFloating = sisaPinjaman * (rFloat) / (1 - Math.pow(1 + rFloat, -sisaTenor));
+          } else {
+            cicilanFloating = sisaPinjaman / sisaTenor;
+          }
+
+          for (let i = 1; i <= sisaTenor; i++) {
+            const bungaBulanan = sisaPinjaman * rFloat;
+            const angsuranPokok = cicilanFloating - bungaBulanan;
+            sisaPinjaman = Math.max(0, sisaPinjaman - angsuranPokok);
             newTabelAngsuran.push({
-              bulan: i,
+              bulan: masaBulanFix + i,
               bunga: `${sukuBungaFloating}%`,
-              angsuran: jumlahCicilan,
-              sisaPlafond: sisaPinjaman > 0 ? sisaPinjaman : 0
+              angsuran: cicilanFloating,
+              sisaPlafond: sisaPinjaman
             });
           }
         }
-        
+
         setAngsuranMasaFixedBunga(jumlahCicilan);
-        setAngsuranMasaFloatingBunga(jumlahCicilan); // Sama untuk sederhananya
+        setAngsuranMasaFloatingBunga(Math.round(cicilanFloating));
       }
       
       // Selalu set tabel angsuran dengan array baru
       setTabelAngsuran(newTabelAngsuran);
       setJangkaWaktuAngsuran(tenorBulan);
+      setHasCalculated(newTabelAngsuran.length > 0);
     } catch (error) {
       console.error("Error dalam perhitungan KPR:", error);
       // Set tabel angsuran kosong jika terjadi error
       setTabelAngsuran([]);
+      setHasCalculated(false);
     }
-  };
+  }, [pendapatanBulanan, usia, lamaPinjaman, jumlahCicilan, sukuBungaFix, masaTahunFix, sukuBungaFloating, isBungaBergerak, tipeBungaAcuan, sukuBungaBerjenjang]);
+
+  useEffect(() => {
+    hitungKPR();
+  }, [hitungKPR]);
+
+  // Reset pagination when table data changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [tabelAngsuran.length]);
 
   // Render form input
   const renderInputForm = () => (
     <div className="space-y-6">
-      <div className="flex gap-2 mb-6">
-        <Button 
-          variant={activeTab === "KPR" ? "default" : "outline"} 
-          className={activeTab === "KPR" ? "bg-blue-900 text-white" : ""}
-          onClick={() => setActiveTab("KPR")}
-        >
-          KPR
-        </Button>
-        <Button 
-          variant={activeTab === "TAKE_OVER" ? "default" : "outline"} 
-          className={activeTab === "TAKE_OVER" ? "bg-blue-900 text-white" : ""}
-          onClick={() => setActiveTab("TAKE_OVER")}
-        >
-          TAKE OVER
-        </Button>
-        <Button 
-          variant={activeTab === "MULTIGUNA" ? "default" : "outline"} 
-          className={activeTab === "MULTIGUNA" ? "bg-blue-900 text-white" : ""}
-          onClick={() => setActiveTab("MULTIGUNA")}
-        >
-          MULTIGUNA
-        </Button>
-      </div>
-
-      <div className="space-y-4">
-        <div>
-          <Label htmlFor="pendapatanBulanan" className="text-sm font-normal text-gray-600">
-            Pendapatan bulanan
-          </Label>
-          <Input
-            id="pendapatanBulanan"
-            type="number"
-            value={pendapatanBulanan}
-            onChange={(e) => setPendapatanBulanan(parseFloat(e.target.value))}
-            className="mt-1"
-          />
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">Informasi Dasar</CardTitle>
+          <CardDescription>Masukkan informasi dasar untuk perhitungan KPR</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
           <div>
-            <Label htmlFor="usia" className="text-sm font-normal text-gray-600">
-              Usia
+            <Label htmlFor="pendapatanBulanan" className="text-sm font-medium text-fundax-darkText">
+              Pendapatan bulanan
             </Label>
             <Input
-              id="usia"
-              type="number"
-              value={usia}
-              onChange={(e) => setUsia(parseInt(e.target.value))}
-              className="mt-1"
+              id="pendapatanBulanan"
+              type="text"
+              inputMode="numeric"
+              value={pendapatanBulananText}
+              onChange={(e) => {
+                const formatted = formatWithDots(e.target.value);
+                setPendapatanBulananText(formatted);
+                setPendapatanBulanan(parseDigits(formatted));
+              }}
+              className="mt-2 transition-all focus:ring-2 focus:ring-fundax-blue"
             />
           </div>
-          <div>
-            <Label htmlFor="lamaPinjaman" className="text-sm font-normal text-gray-600">
-              Lama Pinjaman (Tahun)
-            </Label>
-            <Input
-              id="lamaPinjaman"
-              type="number"
-              value={lamaPinjaman}
-              onChange={(e) => setLamaPinjaman(parseInt(e.target.value))}
-              className="mt-1"
-            />
-          </div>
-        </div>
 
-        <div>
-          <Label htmlFor="jumlahCicilan" className="text-sm font-normal text-gray-600">
-            Jumlah cicilan saat ini yang dibayarkan setiap bulan
-          </Label>
-          <Input
-            id="jumlahCicilan"
-            type="number"
-            value={jumlahCicilan}
-            onChange={(e) => setJumlahCicilan(parseFloat(e.target.value))}
-            className="mt-1"
-          />
-        </div>
-
-        <div className="flex items-center space-x-2">
-          <Checkbox 
-            id="bungaBergerak" 
-            checked={isBungaBergerak}
-            onCheckedChange={handleCheckboxChange}
-          />
-          <label
-            htmlFor="bungaBergerak"
-            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-          >
-            Suku Bunga Bergerak
-          </label>
-        </div>
-
-        <div className="space-y-2">
-          <Label className="text-sm font-normal text-gray-600">
-            Suku Bunga Acuan
-          </Label>
-          <RadioGroup value={tipeBungaAcuan} onValueChange={setTipeBungaAcuan} className="flex gap-4">
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="KPR_KONVENSIONAL" id="kpr_konvensional" />
-              <label htmlFor="kpr_konvensional" className="text-sm">KPR KONVENSIONAL</label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="KPR_SYARIAH" id="kpr_syariah" />
-              <label htmlFor="kpr_syariah" className="text-sm">KPR SYARIAH</label>
-            </div>
-          </RadioGroup>
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="sukuBungaFix" className="text-sm font-normal text-gray-600">
-            Suku Bunga Fix (%)
-          </Label>
-          <Input
-            id="sukuBungaFix"
-            type="number"
-            value={sukuBungaFix}
-            onChange={(e) => setSukuBungaFix(parseFloat(e.target.value))}
-            className={`mt-1 ${isBungaBergerak ? "bg-gray-100" : ""}`}
-            disabled={isBungaBergerak}
-          />
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <Label htmlFor="masaTahunFix" className="text-sm font-normal text-gray-600">
-              Masa Tahun Fix (Tahun)
-            </Label>
-            <Input
-              id="masaTahunFix"
-              type="number"
-              value={masaTahunFix}
-              onChange={(e) => setMasaTahunFix(parseInt(e.target.value))}
-              className={`mt-1 ${isBungaBergerak ? "bg-gray-100" : ""}`}
-              disabled={isBungaBergerak}
-            />
-          </div>
-          <div>
-            <Label htmlFor="sukuBungaFloating" className="text-sm font-normal text-gray-600">
-              Suku Bunga Floating (%)
-            </Label>
-            <Input
-              id="sukuBungaFloating"
-              type="number"
-              value={sukuBungaFloating}
-              onChange={(e) => setSukuBungaFloating(parseFloat(e.target.value))}
-              className={`mt-1 ${isBungaBergerak ? "bg-gray-100" : ""}`}
-              disabled={isBungaBergerak}
-            />
-          </div>
-        </div>
-
-        {isBungaBergerak && (
-          <div className="mt-4 p-4 bg-red-50 rounded-md">
-            <div className="flex items-center mb-2">
-              <Checkbox 
-                id="sukuBungaBerjenjang" 
-                checked={true}
-                disabled
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="usia" className="text-sm font-medium text-fundax-darkText">
+                Usia
+              </Label>
+              <Input
+                id="usia"
+                type="number"
+                value={usia}
+                onChange={(e) => setUsia(Math.max(18, Math.min(100, parseInt(e.target.value) || 25)))}
+                className="mt-2 transition-all focus:ring-2 focus:ring-fundax-blue"
               />
-              <label
-                htmlFor="sukuBungaBerjenjang"
-                className="ml-2 text-sm font-medium"
-              >
-                Suku Bunga Berjenjang
-              </label>
             </div>
-            
-            <div className="grid grid-cols-3 gap-3 max-h-[300px] overflow-y-auto">
-              {Array.from({ length: lamaPinjaman }).map((_, index) => (
-                <div key={index} className="space-y-1">
-                  <label className="text-xs text-gray-600">Bunga Tahun ke-{index + 1}</label>
-                  <Input
-                    type="number"
-                    step="0.1"
-                    value={sukuBungaBerjenjang[index] || 0}
-                    onChange={(e) => {
-                      const newSukuBungaBerjenjang = [...sukuBungaBerjenjang];
-                      newSukuBungaBerjenjang[index] = parseFloat(e.target.value);
-                      setSukuBungaBerjenjang(newSukuBungaBerjenjang);
-                    }}
-                    className="text-sm"
-                  />
-                </div>
-              ))}
+            <div>
+              <Label htmlFor="lamaPinjaman" className="text-sm font-medium text-fundax-darkText">
+                Lama Pinjaman (Tahun)
+              </Label>
+              <Input
+                id="lamaPinjaman"
+                type="number"
+                value={lamaPinjaman}
+                onChange={(e) => setLamaPinjaman(Math.max(1, parseInt(e.target.value) || 15))}
+                className="mt-2 transition-all focus:ring-2 focus:ring-fundax-blue"
+              />
             </div>
           </div>
-        )}
 
-        <Button 
-          className="w-full bg-blue-900 hover:bg-blue-800"
-          onClick={hitungKPR}
-        >
-          Lihat Hasil
-        </Button>
-      </div>
+          <div>
+            <Label htmlFor="jumlahCicilan" className="text-sm font-medium text-fundax-darkText">
+              Jumlah cicilan saat ini yang dibayarkan setiap bulan
+            </Label>
+            <Input
+              id="jumlahCicilan"
+              type="text"
+              inputMode="numeric"
+              value={jumlahCicilanText}
+              onChange={(e) => {
+                const formatted = formatWithDots(e.target.value);
+                setJumlahCicilanText(formatted);
+                setJumlahCicilan(parseDigits(formatted));
+              }}
+              className="mt-2 transition-all focus:ring-2 focus:ring-fundax-blue"
+            />
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">Suku Bunga</CardTitle>
+          <CardDescription>Pilih jenis suku bunga dan masukkan detail</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex items-center space-x-2 p-3 rounded-md border border-input hover:bg-accent/50 transition-colors">
+            <Checkbox 
+              id="bungaBergerak" 
+              checked={isBungaBergerak}
+              onCheckedChange={handleCheckboxChange}
+            />
+            <label
+              htmlFor="bungaBergerak"
+              className="text-sm font-medium leading-none cursor-pointer text-fundax-darkText"
+            >
+              Suku Bunga Bergerak
+            </label>
+          </div>
+
+          <div className="space-y-2">
+            <Label className="text-sm font-medium text-fundax-darkText">
+              Suku Bunga Acuan
+            </Label>
+            <RadioGroup value={tipeBungaAcuan} onValueChange={setTipeBungaAcuan} className="flex gap-6">
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="KPR_KONVENSIONAL" id="kpr_konvensional" />
+                <label htmlFor="kpr_konvensional" className="text-sm font-medium text-fundax-darkText cursor-pointer">KPR KONVENSIONAL</label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="KPR_SYARIAH" id="kpr_syariah" />
+                <label htmlFor="kpr_syariah" className="text-sm font-medium text-fundax-darkText cursor-pointer">KPR SYARIAH</label>
+              </div>
+            </RadioGroup>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="sukuBungaFix" className="text-sm font-medium text-fundax-darkText">
+              Suku Bunga Fix (%)
+            </Label>
+            <Input
+              id="sukuBungaFix"
+              type="number"
+              step="0.1"
+              value={sukuBungaFix}
+              onChange={(e) => setSukuBungaFix(Math.max(0, parseFloat(e.target.value) || 3))}
+              className={`mt-2 transition-all focus:ring-2 focus:ring-fundax-blue ${isBungaBergerak ? "bg-muted opacity-60" : ""}`}
+              disabled={isBungaBergerak}
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="masaTahunFix" className="text-sm font-medium text-fundax-darkText">
+                Masa Tahun Fix (Tahun)
+              </Label>
+              <Input
+                id="masaTahunFix"
+                type="number"
+                value={masaTahunFix}
+                onChange={(e) => setMasaTahunFix(Math.max(1, parseInt(e.target.value) || 5))}
+                className={`mt-2 transition-all focus:ring-2 focus:ring-fundax-blue ${isBungaBergerak ? "bg-muted opacity-60" : ""}`}
+                disabled={isBungaBergerak}
+              />
+            </div>
+            <div>
+              <Label htmlFor="sukuBungaFloating" className="text-sm font-medium text-fundax-darkText">
+                Suku Bunga Floating (%)
+              </Label>
+              <Input
+                id="sukuBungaFloating"
+                type="number"
+                step="0.1"
+                value={sukuBungaFloating}
+                onChange={(e) => setSukuBungaFloating(Math.max(0, parseFloat(e.target.value) || 8))}
+                className={`mt-2 transition-all focus:ring-2 focus:ring-fundax-blue ${isBungaBergerak ? "bg-muted opacity-60" : ""}`}
+                disabled={isBungaBergerak}
+              />
+            </div>
+          </div>
+
+          {isBungaBergerak && (
+            <Card className="mt-4 border-2 border-primary/20 bg-primary/5">
+              <CardHeader>
+                <div className="flex items-center">
+                  <Checkbox 
+                    id="sukuBungaBerjenjang" 
+                    checked={true}
+                    disabled
+                    className="mr-2"
+                  />
+                  <Label htmlFor="sukuBungaBerjenjang" className="text-sm font-medium text-fundax-darkText">
+                    Suku Bunga Berjenjang
+                  </Label>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3 max-h-[300px] overflow-y-auto p-2">
+                  {Array.from({ length: lamaPinjaman }).map((_, index) => (
+                    <div key={index} className="space-y-1">
+                      <Label className="text-xs text-fundax-grayText">Bunga Tahun ke-{index + 1}</Label>
+                      <Input
+                        type="number"
+                        step="0.1"
+                        value={sukuBungaBerjenjang[index] || 0}
+                        onChange={(e) => {
+                          const newSukuBungaBerjenjang = [...sukuBungaBerjenjang];
+                          newSukuBungaBerjenjang[index] = Math.max(0, parseFloat(e.target.value) || 0);
+                          setSukuBungaBerjenjang(newSukuBungaBerjenjang);
+                        }}
+                        className="text-sm transition-all focus:ring-2 focus:ring-fundax-blue"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </CardContent>
+      </Card>
+
+      <Button 
+        className="w-full bg-fundax-blue hover:bg-fundax-blue/90 text-white transition-all shadow-md hover:shadow-lg"
+        onClick={hitungKPR}
+        size="lg"
+      >
+        Lihat Hasil
+      </Button>
     </div>
   );
 
   // Render hasil perhitungan
   const renderHasilPerhitungan = () => (
     <div className="space-y-6">
-      <h2 className="text-xl font-semibold">Hasil</h2>
-      
-      <div className="flex gap-2 mb-6">
-        <Button 
-          variant={activeResultTab === "HASIL_KPR" ? "default" : "outline"} 
-          className={activeResultTab === "HASIL_KPR" ? "bg-blue-900 text-white" : ""}
-          onClick={() => setActiveResultTab("HASIL_KPR")}
-        >
-          HASIL KPR
-        </Button>
-        <Button 
-          variant={activeResultTab === "DETAIL_TABEL_ANGSURAN" ? "default" : "outline"} 
-          className={activeResultTab === "DETAIL_TABEL_ANGSURAN" ? "bg-blue-900 text-white" : ""}
-          onClick={() => setActiveResultTab("DETAIL_TABEL_ANGSURAN")}
-        >
-          DETAIL TABEL ANGSURAN
-        </Button>
-      </div>
-      
-      {activeResultTab === "HASIL_KPR" && (
-        <>
-          <div className="mb-6">
-            <p className="text-sm text-gray-600">Maksimal Limit Pinjaman</p>
-            <p className="text-2xl font-bold text-blue-900">{formatCurrency(maksimalLimitPinjaman)}</p>
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-xl">Hasil Perhitungan</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="flex gap-2">
+            <Button 
+              variant={activeResultTab === "HASIL_KPR" ? "default" : "outline"} 
+              className={activeResultTab === "HASIL_KPR" ? "bg-fundax-blue text-white hover:bg-fundax-blue/90" : ""}
+              onClick={() => setActiveResultTab("HASIL_KPR")}
+            >
+              HASIL KPR
+            </Button>
+            <Button 
+              variant={activeResultTab === "DETAIL_TABEL_ANGSURAN" ? "default" : "outline"} 
+              className={activeResultTab === "DETAIL_TABEL_ANGSURAN" ? "bg-fundax-blue text-white hover:bg-fundax-blue/90" : ""}
+              onClick={() => setActiveResultTab("DETAIL_TABEL_ANGSURAN")}
+            >
+              DETAIL TABEL ANGSURAN
+            </Button>
           </div>
           
-          {isBungaBergerak ? (
-            <div className="grid grid-cols-3 gap-4 mb-6">
-              <div className="bg-gray-100 p-3 rounded-md">
-                <p className="text-xs text-gray-600 mb-1">Bunga Tahun Pertama</p>
-                <p className="text-xl font-semibold text-blue-900">{sukuBungaBerjenjang[0]} %</p>
-              </div>
-              <div className="bg-gray-100 p-3 rounded-md">
-                <p className="text-xs text-gray-600 mb-1">Tenor</p>
-                <p className="text-xl font-semibold text-blue-500">{lamaPinjaman} Tahun</p>
-              </div>
-              <div className="bg-gray-100 p-3 rounded-md">
-                <p className="text-xs text-gray-600 mb-1">Bunga Tahun Terakhir</p>
-                <p className="text-xl font-semibold text-blue-500">
-                  {sukuBungaBerjenjang[lamaPinjaman - 1]} %
-                </p>
-              </div>
-            </div>
-          ) : (
-            <div className="grid grid-cols-3 gap-4 mb-6">
-              <div className="bg-gray-100 p-3 rounded-md">
-                <p className="text-xs text-gray-600 mb-1">Bunga Fixed</p>
-                <p className="text-xl font-semibold text-blue-900">{sukuBungaFix} %</p>
-              </div>
-              <div className="bg-gray-100 p-3 rounded-md">
-                <p className="text-xs text-gray-600 mb-1">Tenor</p>
-                <p className="text-xl font-semibold text-blue-500">{lamaPinjaman} Tahun</p>
-              </div>
-              <div className="bg-gray-100 p-3 rounded-md">
-                <p className="text-xs text-gray-600 mb-1">Masa Fixed</p>
-                <p className="text-xl font-semibold text-blue-500">{masaTahunFix} Tahun</p>
-              </div>
-            </div>
-          )}
-          
-          <div className="space-y-4">
-            {isBungaBergerak ? (
-              <div className="flex justify-between items-center border-b pb-2">
-                <p className="text-sm">Angsuran bulanan (dapat berubah setiap tahun)</p>
-                <p className="text-sm font-semibold">{formatCurrency(jumlahCicilan)}/Bulan</p>
-              </div>
-            ) : (
-              <>
-                <div className="flex justify-between items-center border-b pb-2">
-                  <p className="text-sm">Angsuran selama masa fixed bunga {sukuBungaFix}% selama Bulan 1 - {masaTahunFix * 12}</p>
-                  <p className="text-sm font-semibold">{formatCurrency(angsuranMasaFixedBunga)}/Bulan</p>
-                </div>
-                
-                {masaTahunFix < lamaPinjaman && (
-                  <div className="flex justify-between items-center border-b pb-2">
-                    <p className="text-sm">Angsuran selama masa floating bunga {sukuBungaFloating}% selama Bulan {masaTahunFix * 12 + 1} - {lamaPinjaman * 12}</p>
-                    <p className="text-sm font-semibold">{formatCurrency(angsuranMasaFloatingBunga)}/Bulan</p>
-                  </div>
-                )}
-              </>
-            )}
-            
-            <div className="flex justify-between items-center border-b pb-2">
-              <p className="text-sm">Jangka Waktu Angsuran</p>
-              <p className="text-sm font-semibold">{jangkaWaktuAngsuran} Bulan</p>
-            </div>
-          </div>
-        </>
-      )}
-      
-      {activeResultTab === "DETAIL_TABEL_ANGSURAN" && (
-        <div className="overflow-auto max-h-[400px]">
-          {tabelAngsuran && tabelAngsuran.length > 0 ? (
+          {activeResultTab === "HASIL_KPR" && (
             <>
-              <table className="w-full border-collapse">
-                <thead className="bg-blue-900 text-white sticky top-0">
-                  <tr>
-                    <th className="p-3 text-left">Bulan</th>
-                    <th className="p-3 text-left">Bunga</th>
-                    <th className="p-3 text-right">Angsuran</th>
-                    <th className="p-3 text-right">Sisa Plafond</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {tabelAngsuran.map((row, index) => (
-                    <tr key={index} className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}>
-                      <td className="p-3 border-b">{row.bulan}</td>
-                      <td className="p-3 border-b">{row.bunga}</td>
-                      <td className="p-3 border-b text-right">{formatCurrency(row.angsuran)}</td>
-                      <td className="p-3 border-b text-right">{formatCurrency(row.sisaPlafond)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              <Card className="bg-gradient-to-br from-fundax-blue/10 to-fundax-lightBlue/5 border-fundax-blue/20">
+                <CardContent className="pt-6">
+                  <div className="mb-2">
+                    <p className="text-sm text-fundax-grayText mb-1">Maksimal Limit Pinjaman</p>
+                    <p className="text-3xl font-bold text-fundax-blue">{formatCurrency(maksimalLimitPinjaman)}</p>
+                  </div>
+                </CardContent>
+              </Card>
               
-              <div className="flex justify-between items-center mt-4 px-2">
-                <div className="flex items-center gap-2">
-                  <span className="text-sm">Rows per page:</span>
-                  <select className="border rounded p-1 text-sm">
-                    <option>12</option>
-                    <option>24</option>
-                    <option>48</option>
-                  </select>
+              {isBungaBergerak ? (
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <Card className="bg-muted/50">
+                    <CardContent className="pt-6">
+                      <p className="text-xs text-fundax-grayText mb-1">Bunga Tahun Pertama</p>
+                      <p className="text-xl font-semibold text-fundax-blue">{sukuBungaBerjenjang[0] || 0} %</p>
+                    </CardContent>
+                  </Card>
+                  <Card className="bg-muted/50">
+                    <CardContent className="pt-6">
+                      <p className="text-xs text-fundax-grayText mb-1">Tenor</p>
+                      <p className="text-xl font-semibold text-fundax-blue">{lamaPinjaman} Tahun</p>
+                    </CardContent>
+                  </Card>
+                  <Card className="bg-muted/50">
+                    <CardContent className="pt-6">
+                      <p className="text-xs text-fundax-grayText mb-1">Bunga Tahun Terakhir</p>
+                      <p className="text-xl font-semibold text-fundax-blue">
+                        {sukuBungaBerjenjang[lamaPinjaman - 1] || 0} %
+                      </p>
+                    </CardContent>
+                  </Card>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-sm">1–{Math.min(12, tabelAngsuran.length)} of {tabelAngsuran.length}</span>
-                  <button className="p-1 rounded hover:bg-gray-200" disabled={true}>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <polyline points="15 18 9 12 15 6"></polyline>
-                    </svg>
-                  </button>
-                  <button className="p-1 rounded hover:bg-gray-200" disabled={tabelAngsuran.length <= 12}>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <polyline points="9 18 15 12 9 6"></polyline>
-                    </svg>
-                  </button>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <Card className="bg-muted/50">
+                    <CardContent className="pt-6">
+                      <p className="text-xs text-fundax-grayText mb-1">Bunga Fixed</p>
+                      <p className="text-xl font-semibold text-fundax-blue">{sukuBungaFix} %</p>
+                    </CardContent>
+                  </Card>
+                  <Card className="bg-muted/50">
+                    <CardContent className="pt-6">
+                      <p className="text-xs text-fundax-grayText mb-1">Tenor</p>
+                      <p className="text-xl font-semibold text-fundax-blue">{lamaPinjaman} Tahun</p>
+                    </CardContent>
+                  </Card>
+                  <Card className="bg-muted/50">
+                    <CardContent className="pt-6">
+                      <p className="text-xs text-fundax-grayText mb-1">Masa Fixed</p>
+                      <p className="text-xl font-semibold text-fundax-blue">{masaTahunFix} Tahun</p>
+                    </CardContent>
+                  </Card>
                 </div>
-              </div>
+              )}
+              
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-base">Detail Angsuran</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {isBungaBergerak ? (
+                    <div className="flex justify-between items-center border-b pb-3">
+                      <p className="text-sm text-fundax-darkText">Angsuran bulanan (dapat berubah setiap tahun)</p>
+                      <p className="text-sm font-semibold text-fundax-blue">{formatCurrency(jumlahCicilan)}/Bulan</p>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="flex justify-between items-center border-b pb-3">
+                        <p className="text-sm text-fundax-darkText">Angsuran selama masa fixed bunga {sukuBungaFix}% selama Bulan 1 - {masaTahunFix * 12}</p>
+                        <p className="text-sm font-semibold text-fundax-blue">{formatCurrency(angsuranMasaFixedBunga)}/Bulan</p>
+                      </div>
+                      
+                      {masaTahunFix < lamaPinjaman && (
+                        <div className="flex justify-between items-center border-b pb-3">
+                          <p className="text-sm text-fundax-darkText">Angsuran selama masa floating bunga {sukuBungaFloating}% selama Bulan {masaTahunFix * 12 + 1} - {lamaPinjaman * 12}</p>
+                          <p className="text-sm font-semibold text-fundax-blue">{formatCurrency(angsuranMasaFloatingBunga)}/Bulan</p>
+                        </div>
+                      )}
+                    </>
+                  )}
+                  
+                  <div className="flex justify-between items-center pt-2">
+                    <p className="text-sm font-medium text-fundax-darkText">Jangka Waktu Angsuran</p>
+                    <p className="text-sm font-semibold text-fundax-blue">{jangkaWaktuAngsuran} Bulan</p>
+                  </div>
+                </CardContent>
+              </Card>
             </>
-          ) : (
-            <div className="p-8 text-center">
-              <p className="text-gray-500">Tidak ada data angsuran untuk ditampilkan.</p>
-              <p className="text-gray-500 text-sm mt-2">Silakan isi semua data dan klik "Lihat Hasil" untuk melihat tabel angsuran.</p>
-            </div>
           )}
-        </div>
-      )}
-      
-      <div className="mt-6 flex gap-2">
-        <Button className="w-full bg-blue-900 hover:bg-blue-800">
-          Download PDF
-        </Button>
-        <Button className="w-full bg-blue-900 hover:bg-blue-800">
-          Ajukan KPR
-        </Button>
-      </div>
-      
-      <p className="text-xs text-gray-500 mt-4">
-        Catatan: Perhitungan ini adalah hasil perkiraan aplikasi KPR secara umum. Data perhitungan di atas dapat berbeda dengan perhitungan bank. Untuk perhitungan yang akurat, silakan hubungi bank penyedia pinjaman KPR.
-      </p>
+          
+          {activeResultTab === "DETAIL_TABEL_ANGSURAN" && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base">Tabel Angsuran</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="overflow-auto max-h-[500px] rounded-md border">
+                  {tabelAngsuran && tabelAngsuran.length > 0 ? (
+                    <>
+                      <table className="w-full border-collapse">
+                        <thead className="bg-fundax-blue text-white sticky top-0 z-10">
+                          <tr>
+                            <th className="p-3 text-left text-sm font-semibold">Bulan</th>
+                            <th className="p-3 text-left text-sm font-semibold">Bunga</th>
+                            <th className="p-3 text-right text-sm font-semibold">Angsuran</th>
+                            <th className="p-3 text-right text-sm font-semibold">Sisa Plafond</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {tabelAngsuran
+                            .slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage)
+                            .map((row, index) => (
+                            <tr 
+                              key={index} 
+                              className={`transition-colors ${index % 2 === 0 ? "bg-white hover:bg-muted/50" : "bg-muted/30 hover:bg-muted/70"}`}
+                            >
+                              <td className="p-3 border-b text-sm">{row.bulan}</td>
+                              <td className="p-3 border-b text-sm">{row.bunga}</td>
+                              <td className="p-3 border-b text-right text-sm font-medium">{formatCurrency(row.angsuran)}</td>
+                              <td className="p-3 border-b text-right text-sm font-medium">{formatCurrency(row.sisaPlafond)}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                      
+                      <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mt-4 px-2 pb-2">
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm text-fundax-grayText">Rows per page:</span>
+                          <select 
+                            className="border rounded-md p-1.5 text-sm bg-background transition-colors focus:ring-2 focus:ring-fundax-blue focus:outline-none"
+                            value={rowsPerPage}
+                            onChange={(e) => {
+                              setRowsPerPage(Number(e.target.value));
+                              setCurrentPage(1);
+                            }}
+                          >
+                            <option value={12}>12</option>
+                            <option value={24}>24</option>
+                            <option value={48}>48</option>
+                          </select>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm text-fundax-grayText">
+                            {(currentPage - 1) * rowsPerPage + 1}–{Math.min(currentPage * rowsPerPage, tabelAngsuran.length)} of {tabelAngsuran.length}
+                          </span>
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            className="h-8 w-8"
+                            disabled={currentPage === 1}
+                            onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <polyline points="15 18 9 12 15 6"></polyline>
+                            </svg>
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            className="h-8 w-8"
+                            disabled={currentPage * rowsPerPage >= tabelAngsuran.length}
+                            onClick={() => setCurrentPage(prev => Math.min(Math.ceil(tabelAngsuran.length / rowsPerPage), prev + 1))}
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <polyline points="9 18 15 12 9 6"></polyline>
+                            </svg>
+                          </Button>
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="p-8 text-center">
+                      <p className="text-fundax-grayText">Tidak ada data angsuran untuk ditampilkan.</p>
+                      <p className="text-fundax-grayText text-sm mt-2">Silakan isi semua data dan klik "Lihat Hasil" untuk melihat tabel angsuran.</p>
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+          
+          <div className="flex flex-col sm:flex-row gap-2">
+            <Button 
+              className="flex-1 bg-fundax-blue hover:bg-fundax-blue/90 text-white transition-all shadow-md hover:shadow-lg disabled:opacity-50" 
+              disabled={!hasCalculated}
+            >
+              Download PDF
+            </Button>
+            <Button 
+              className="flex-1 bg-fundax-blue hover:bg-fundax-blue/90 text-white transition-all shadow-md hover:shadow-lg disabled:opacity-50" 
+              disabled={!hasCalculated}
+            >
+              Ajukan KPR
+            </Button>
+          </div>
+          
+          <p className="text-xs text-fundax-grayText mt-2 leading-relaxed">
+            Catatan: Perhitungan ini adalah hasil perkiraan aplikasi KPR secara umum. Data perhitungan di atas dapat berbeda dengan perhitungan bank. Untuk perhitungan yang akurat, silakan hubungi bank penyedia pinjaman KPR.
+          </p>
+        </CardContent>
+      </Card>
     </div>
   );
 

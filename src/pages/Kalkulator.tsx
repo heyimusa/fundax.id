@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
@@ -10,65 +10,57 @@ import MultigunaCalculator from '../components/kalkulator/MultigunaCalculator';
 import DepositoCalculator from '../components/kalkulator/DepositoCalculator';
 
 const Kalkulator = () => {
-  // Gunakan satu state untuk melacak tab aktif
-  const [activeTab, setActiveTab] = useState<string>("KPR");
-
-  // Render konten berdasarkan tab aktif
-  const renderContent = () => {
-    switch (activeTab) {
-      case "KPR":
-        return <KprCalculator />;
-      case "TAKE_OVER":
-        return <TakeOverCalculator />;
-      case "MULTIGUNA":
-        return <MultigunaCalculator />;
-      case "DEPOSITO":
-        return <DepositoCalculator />;
-      default:
-        return <KprCalculator />;
-    }
-  };
-
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
       <div className="flex-1 container mx-auto px-4 py-8">
-        <h1 className="text-2xl font-bold mb-6">Kalkulator Finansial</h1>
+        <h1 className="text-2xl md:text-3xl font-bold mb-6 text-fundax-darkText">Kalkulator Finansial</h1>
         
         {/* Tab utama */}
-        <div className="mb-6">
-          <div className="bg-gray-100 p-2 rounded-lg">
-            <div className="flex flex-wrap">
-              <button 
-                className={`px-4 py-2 rounded-md mr-2 mb-2 ${activeTab === "KPR" ? "bg-blue-900 text-white" : "bg-white"}`}
-                onClick={() => setActiveTab("KPR")}
-              >
-                KPR
-              </button>
-              <button 
-                className={`px-4 py-2 rounded-md mr-2 mb-2 ${activeTab === "TAKE_OVER" ? "bg-blue-900 text-white" : "bg-white"}`}
-                onClick={() => setActiveTab("TAKE_OVER")}
-              >
-                TAKE OVER
-              </button>
-              <button 
-                className={`px-4 py-2 rounded-md mr-2 mb-2 ${activeTab === "MULTIGUNA" ? "bg-blue-900 text-white" : "bg-white"}`}
-                onClick={() => setActiveTab("MULTIGUNA")}
-              >
-                MULTIGUNA
-              </button>
-              <button 
-                className={`px-4 py-2 rounded-md mr-2 mb-2 ${activeTab === "DEPOSITO" ? "bg-blue-900 text-white" : "bg-white"}`}
-                onClick={() => setActiveTab("DEPOSITO")}
-              >
-                DEPOSITO
-              </button>
-            </div>
-          </div>
-        </div>
-        
-        {/* Konten */}
-        {renderContent()}
+        <Tabs defaultValue="KPR" className="w-full">
+          <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 mb-6 h-auto p-1 bg-muted">
+            <TabsTrigger 
+              value="KPR" 
+              className="data-[state=active]:bg-fundax-blue data-[state=active]:text-white transition-all"
+            >
+              KPR
+            </TabsTrigger>
+            <TabsTrigger 
+              value="TAKE_OVER" 
+              className="data-[state=active]:bg-fundax-blue data-[state=active]:text-white transition-all"
+            >
+              TAKE OVER
+            </TabsTrigger>
+            <TabsTrigger 
+              value="MULTIGUNA" 
+              className="data-[state=active]:bg-fundax-blue data-[state=active]:text-white transition-all"
+            >
+              MULTIGUNA
+            </TabsTrigger>
+            <TabsTrigger 
+              value="DEPOSITO" 
+              className="data-[state=active]:bg-fundax-blue data-[state=active]:text-white transition-all"
+            >
+              DEPOSITO
+            </TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="KPR">
+            <KprCalculator />
+          </TabsContent>
+          
+          <TabsContent value="TAKE_OVER">
+            <TakeOverCalculator />
+          </TabsContent>
+          
+          <TabsContent value="MULTIGUNA">
+            <MultigunaCalculator />
+          </TabsContent>
+          
+          <TabsContent value="DEPOSITO">
+            <DepositoCalculator />
+          </TabsContent>
+        </Tabs>
       </div>
       <Footer />
     </div>

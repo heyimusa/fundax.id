@@ -1,22 +1,12 @@
-# Welcome to your Lovable project
-
-## Project info
-
-**URL**: https://lovable.dev/projects/e7f347a6-25d9-4ef6-bee3-b2f9a3efc827
+# Project Setup
 
 ## How can I edit this code?
 
 There are several ways of editing your application.
 
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/e7f347a6-25d9-4ef6-bee3-b2f9a3efc827) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
 **Use your preferred IDE**
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+If you want to work locally using your own IDE, you can clone this repo and push changes.
 
 The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
 
@@ -62,8 +52,8 @@ This project is built with .
 
 ## How can I deploy this project?
 
-Simply open [Lovable](https://lovable.dev/projects/e7f347a6-25d9-4ef6-bee3-b2f9a3efc827) and click on Share -> Publish.
+You can deploy this project using various platforms like Netlify, Vercel, or other static site hosting providers. Refer to their documentation for specific deployment instructions.
 
 ## I want to use a custom domain - is that possible?
 
-We don't support custom domains (yet). If you want to deploy your project under your own domain then we recommend using Netlify. Visit our docs for more details: [Custom domains](https://docs.lovable.dev/tips-tricks/custom-domain/)
+Yes, most hosting providers support custom domains. Please refer to the documentation of your chosen deployment platform for details on how to configure a custom domain.

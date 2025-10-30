@@ -15,17 +15,19 @@ const DepositoCalculator = () => {
   const [bungaNetto, setBungaNetto] = useState<number>(0);
   const [totalAkhir, setTotalAkhir] = useState<number>(0);
 
-  useEffect(() => {
-    hitungDeposito();
-  }, [pokok, sukuBunga, jangkaWaktu, pajakBunga]);
+  const hitungDeposito = React.useCallback(() => {
+    // Validasi input
+    const validPokok = Math.max(0, pokok || 0);
+    const validSukuBunga = Math.max(0, sukuBunga || 0);
+    const validJangkaWaktu = Math.max(1, jangkaWaktu || 1);
+    const validPajakBunga = Math.max(0, Math.min(100, pajakBunga || 0));
 
-  const hitungDeposito = () => {
     // Hitung bunga bruto (sebelum pajak)
-    const bruto = pokok * (sukuBunga / 100) * (jangkaWaktu / 12);
+    const bruto = validPokok * (validSukuBunga / 100) * (validJangkaWaktu / 12);
     setBungaBruto(bruto);
     
     // Hitung pajak
-    const pajak = bruto * (pajakBunga / 100);
+    const pajak = bruto * (validPajakBunga / 100);
     setPajakTotal(pajak);
     
     // Hitung bunga netto (setelah pajak)
@@ -33,9 +35,13 @@ const DepositoCalculator = () => {
     setBungaNetto(netto);
     
     // Hitung total akhir
-    const total = pokok + netto;
+    const total = validPokok + netto;
     setTotalAkhir(total);
-  };
+  }, [pokok, sukuBunga, jangkaWaktu, pajakBunga]);
+
+  useEffect(() => {
+    hitungDeposito();
+  }, [hitungDeposito]);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -49,7 +55,10 @@ const DepositoCalculator = () => {
               id="pokok"
               type="number"
               value={pokok}
-              onChange={(e) => setPokok(parseFloat(e.target.value))}
+              onChange={(e) => {
+                const value = parseFloat(e.target.value) || 0;
+                setPokok(Math.max(0, value));
+              }}
               className="mt-1"
             />
           </div>
@@ -62,7 +71,10 @@ const DepositoCalculator = () => {
               id="sukuBunga"
               type="number"
               value={sukuBunga}
-              onChange={(e) => setSukuBunga(parseFloat(e.target.value))}
+              onChange={(e) => {
+                const value = parseFloat(e.target.value) || 0;
+                setSukuBunga(Math.max(0, value));
+              }}
               className="mt-1"
             />
           </div>
@@ -75,7 +87,10 @@ const DepositoCalculator = () => {
               id="jangkaWaktu"
               type="number"
               value={jangkaWaktu}
-              onChange={(e) => setJangkaWaktu(parseInt(e.target.value))}
+              onChange={(e) => {
+                const value = parseInt(e.target.value) || 1;
+                setJangkaWaktu(Math.max(1, value));
+              }}
               className="mt-1"
             />
           </div>
@@ -88,7 +103,10 @@ const DepositoCalculator = () => {
               id="pajakBunga"
               type="number"
               value={pajakBunga}
-              onChange={(e) => setPajakBunga(parseFloat(e.target.value))}
+              onChange={(e) => {
+                const value = parseFloat(e.target.value) || 0;
+                setPajakBunga(Math.max(0, Math.min(100, value)));
+              }}
               className="mt-1"
             />
           </div>
@@ -122,7 +140,7 @@ const DepositoCalculator = () => {
             
             <div className="flex justify-between items-center pt-2">
               <p className="text-sm font-medium">Total Akhir</p>
-              <p className="text-lg font-bold text-blue-900">{formatCurrency(totalAkhir)}</p>
+              <p className="text-lg font-bold text-fundax-blue">{formatCurrency(totalAkhir)}</p>
             </div>
           </div>
         </div>

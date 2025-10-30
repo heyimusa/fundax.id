@@ -2,6 +2,7 @@
 import React from 'react';
 import { Facebook, Linkedin, Instagram, Twitter } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import TrustBadges from './TrustBadges';
 
 const Footer = () => {
   return (
@@ -67,6 +68,11 @@ const Footer = () => {
               <p><a href="#" className="hover:underline">Syarat dan Ketentuan</a></p>
             </div>
           </div>
+        </div>
+        
+        {/* Trust Badges Section */}
+        <div className="border-t border-blue-300 pt-8 mt-8">
+          <TrustBadges />
         </div>
       </div>
     </footer>
