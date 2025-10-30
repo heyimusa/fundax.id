@@ -1,5 +1,6 @@
 
 import React from 'react';
+import heroImage from '../assets/images/hero/hero-financial-services.svg';
 
 const Hero = () => {
   return (
@@ -7,7 +8,7 @@ const Hero = () => {
       <div className="absolute top-0 right-0 bottom-0 left-0">
         <div className="w-full h-full bg-[#D9D9D9]">
           <img 
-            src="https://images.unsplash.com/photo-1560520031-3a4dc4e9de0c?q=80&w=1973&auto=format&fit=crop" 
+            src={heroImage} 
             alt="Financial services" 
             className="w-full h-full object-cover"
           />

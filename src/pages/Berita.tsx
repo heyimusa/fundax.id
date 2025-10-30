@@ -16,6 +16,14 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
+// Article images
+import article1 from '../assets/images/articles/tips-memilih-produk-pinjaman.svg';
+import article2 from '../assets/images/articles/fundax-terdaftar-ojk.svg';
+import article3 from '../assets/images/articles/panduan-lengkap-kpr.svg';
+import article4 from '../assets/images/articles/keuntungan-loan-adviser.svg';
+import article5 from '../assets/images/articles/fundax-ekspansi-24-kota.svg';
+import article6 from '../assets/images/articles/memahami-bunga-fixed-floating.svg';
+
 interface Article {
   id: string;
   title: string;
@@ -35,7 +43,7 @@ const articles: Article[] = [
     category: 'Tips & Trik',
     author: 'Tim Fundax',
     date: '15 Januari 2025',
-    image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800&h=400&fit=crop',
+    image: article1,
     readTime: '5 menit'
   },
   {
@@ -45,7 +53,7 @@ const articles: Article[] = [
     category: 'Berita',
     author: 'Admin Fundax',
     date: '10 Januari 2025',
-    image: 'https://images.unsplash.com/photo-1563986768609-322da13575f3?w=800&h=400&fit=crop',
+    image: article2,
     readTime: '3 menit'
   },
   {
@@ -55,7 +63,7 @@ const articles: Article[] = [
     category: 'Panduan',
     author: 'Tim Fundax',
     date: '5 Januari 2025',
-    image: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&h=400&fit=crop',
+    image: article3,
     readTime: '8 menit'
   },
   {
@@ -65,7 +73,7 @@ const articles: Article[] = [
     category: 'Tips & Trik',
     author: 'Tim Fundax',
     date: '28 Desember 2024',
-    image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&h=400&fit=crop',
+    image: article4,
     readTime: '6 menit'
   },
   {
@@ -75,7 +83,7 @@ const articles: Article[] = [
     category: 'Berita',
     author: 'Admin Fundax',
     date: '20 Desember 2024',
-    image: 'https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=800&h=400&fit=crop',
+    image: article5,
     readTime: '4 menit'
   },
   {
@@ -85,7 +93,7 @@ const articles: Article[] = [
     category: 'Edukasi',
     author: 'Tim Fundax',
     date: '15 Desember 2024',
-    image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=400&fit=crop',
+    image: article6,
     readTime: '7 menit'
   }
 ];

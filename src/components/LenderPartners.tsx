@@ -1,22 +1,39 @@
 import React from 'react';
 import { Building2 } from 'lucide-react';
 
+// Bank logos
+import bankMandiri from '../assets/images/logos/banks/bank-mandiri.svg';
+import bankBCA from '../assets/images/logos/banks/bank-bca.svg';
+import bankBRI from '../assets/images/logos/banks/bank-bri.svg';
+import bankBNI from '../assets/images/logos/banks/bank-bni.svg';
+import bankCIMB from '../assets/images/logos/banks/bank-cimb.svg';
+import bankDanamon from '../assets/images/logos/banks/bank-danamon.svg';
+import bankOCBC from '../assets/images/logos/banks/bank-ocbc.svg';
+import bankPermata from '../assets/images/logos/banks/bank-permata.svg';
+import bankMaybank from '../assets/images/logos/banks/bank-maybank.svg';
+import bankPanin from '../assets/images/logos/banks/bank-panin.svg';
+import bankBTPN from '../assets/images/logos/banks/bank-btpn.svg';
+import bankDBS from '../assets/images/logos/banks/bank-dbs.svg';
+import bankHSBC from '../assets/images/logos/banks/bank-hsbc.svg';
+import bankUOB from '../assets/images/logos/banks/bank-uob.svg';
+import bankStandardChartered from '../assets/images/logos/banks/bank-standard-chartered.svg';
+
 const lenders = [
-  { name: 'Bank Mandiri', logo: 'https://via.placeholder.com/150x80?text=Bank+Mandiri' },
-  { name: 'Bank BCA', logo: 'https://via.placeholder.com/150x80?text=Bank+BCA' },
-  { name: 'Bank BRI', logo: 'https://via.placeholder.com/150x80?text=Bank+BRI' },
-  { name: 'Bank BNI', logo: 'https://via.placeholder.com/150x80?text=Bank+BNI' },
-  { name: 'Bank CIMB', logo: 'https://via.placeholder.com/150x80?text=Bank+CIMB' },
-  { name: 'Bank Danamon', logo: 'https://via.placeholder.com/150x80?text=Bank+Danamon' },
-  { name: 'Bank OCBC', logo: 'https://via.placeholder.com/150x80?text=Bank+OCBC' },
-  { name: 'Bank Permata', logo: 'https://via.placeholder.com/150x80?text=Bank+Permata' },
-  { name: 'Bank Maybank', logo: 'https://via.placeholder.com/150x80?text=Bank+Maybank' },
-  { name: 'Bank Panin', logo: 'https://via.placeholder.com/150x80?text=Bank+Panin' },
-  { name: 'Bank BTPN', logo: 'https://via.placeholder.com/150x80?text=Bank+BTPN' },
-  { name: 'Bank DBS', logo: 'https://via.placeholder.com/150x80?text=Bank+DBS' },
-  { name: 'Bank HSBC', logo: 'https://via.placeholder.com/150x80?text=Bank+HSBC' },
-  { name: 'Bank UOB', logo: 'https://via.placeholder.com/150x80?text=Bank+UOB' },
-  { name: 'Bank Standard Chartered', logo: 'https://via.placeholder.com/150x80?text=Bank+SC' },
+  { name: 'Bank Mandiri', logo: bankMandiri },
+  { name: 'Bank BCA', logo: bankBCA },
+  { name: 'Bank BRI', logo: bankBRI },
+  { name: 'Bank BNI', logo: bankBNI },
+  { name: 'Bank CIMB', logo: bankCIMB },
+  { name: 'Bank Danamon', logo: bankDanamon },
+  { name: 'Bank OCBC', logo: bankOCBC },
+  { name: 'Bank Permata', logo: bankPermata },
+  { name: 'Bank Maybank', logo: bankMaybank },
+  { name: 'Bank Panin', logo: bankPanin },
+  { name: 'Bank BTPN', logo: bankBTPN },
+  { name: 'Bank DBS', logo: bankDBS },
+  { name: 'Bank HSBC', logo: bankHSBC },
+  { name: 'Bank UOB', logo: bankUOB },
+  { name: 'Bank Standard Chartered', logo: bankStandardChartered },
 ];
 
 const LenderPartners = () => {

@@ -1,17 +1,29 @@
 import React from 'react';
 import { Newspaper } from 'lucide-react';
 
+// Media logos
+import swasembada from '../assets/images/logos/media/swasembada.svg';
+import bisnisIndonesia from '../assets/images/logos/media/bisnis-indonesia.svg';
+import liputan6 from '../assets/images/logos/media/liputan-6.svg';
+import kontan from '../assets/images/logos/media/kontan.svg';
+import merdeka from '../assets/images/logos/media/merdeka.svg';
+import republika from '../assets/images/logos/media/republika.svg';
+import suaraPemberitaan from '../assets/images/logos/media/suara-pemberitaan.svg';
+import bisnisCom from '../assets/images/logos/media/bisnis-com.svg';
+import marketingCoId from '../assets/images/logos/media/marketing-co-id.svg';
+import mediaIndonesia from '../assets/images/logos/media/media-indonesia.svg';
+
 const media = [
-  { name: 'Swasembada', logo: 'https://via.placeholder.com/120x60?text=Swasembada' },
-  { name: 'Bisnis Indonesia', logo: 'https://via.placeholder.com/120x60?text=Bisnis+Indonesia' },
-  { name: 'Liputan 6', logo: 'https://via.placeholder.com/120x60?text=Liputan+6' },
-  { name: 'Kontan', logo: 'https://via.placeholder.com/120x60?text=Kontan' },
-  { name: 'Merdeka', logo: 'https://via.placeholder.com/120x60?text=Merdeka' },
-  { name: 'Republika', logo: 'https://via.placeholder.com/120x60?text=Republika' },
-  { name: 'Suara Pemberitaan', logo: 'https://via.placeholder.com/120x60?text=Suara' },
-  { name: 'Bisnis.com', logo: 'https://via.placeholder.com/120x60?text=Bisnis.com' },
-  { name: 'Marketing.co.id', logo: 'https://via.placeholder.com/120x60?text=Marketing' },
-  { name: 'Media Indonesia', logo: 'https://via.placeholder.com/120x60?text=Media+Indonesia' },
+  { name: 'Swasembada', logo: swasembada },
+  { name: 'Bisnis Indonesia', logo: bisnisIndonesia },
+  { name: 'Liputan 6', logo: liputan6 },
+  { name: 'Kontan', logo: kontan },
+  { name: 'Merdeka', logo: merdeka },
+  { name: 'Republika', logo: republika },
+  { name: 'Suara Pemberitaan', logo: suaraPemberitaan },
+  { name: 'Bisnis.com', logo: bisnisCom },
+  { name: 'Marketing.co.id', logo: marketingCoId },
+  { name: 'Media Indonesia', logo: mediaIndonesia },
 ];
 
 const MediaCoverage = () => {

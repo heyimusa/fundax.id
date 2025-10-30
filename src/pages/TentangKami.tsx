@@ -6,6 +6,12 @@ import { Button } from '../components/ui/button';
 import { MapPin, Users, Award, TrendingUp, Globe, Building2, Calendar, Target } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
+// Team images
+import managementTeam from '../assets/images/team/management-team.svg';
+import loanAdvisersTeam from '../assets/images/team/loan-advisers-team.svg';
+import customerServiceTeam from '../assets/images/team/customer-service-team.svg';
+import fundaxTeamAbout from '../assets/images/general/fundax-team-about.svg';
+
 const timeline = [
   {
     year: '2020',
@@ -72,17 +78,17 @@ const team = [
   {
     name: 'Management Team',
     description: 'Tim manajemen berpengalaman dengan track record di industri finansial',
-    image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=400&h=300&fit=crop'
+    image: managementTeam
   },
   {
     name: 'Loan Advisers',
     description: 'Lebih dari 100 Loan Adviser profesional siap membantu Anda',
-    image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=400&h=300&fit=crop'
+    image: loanAdvisersTeam
   },
   {
     name: 'Customer Service',
     description: 'Tim customer service yang responsif dan siap membantu 24/7',
-    image: 'https://images.unsplash.com/photo-1556761175-4b46a572b786?w=400&h=300&fit=crop'
+    image: customerServiceTeam
   }
 ];
 
@@ -131,7 +137,7 @@ const TentangKami = () => {
             </div>
             <div className="relative">
               <img 
-                src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=800&h=600&fit=crop" 
+                src={fundaxTeamAbout} 
                 alt="Fundax Team" 
                 className="rounded-lg shadow-xl"
               />
