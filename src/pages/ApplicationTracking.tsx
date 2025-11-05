@@ -82,18 +82,38 @@ const ApplicationTracking = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [applicationNumber, setApplicationNumber] = useState('');
   const [selectedApplication, setSelectedApplication] = useState<Application | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleSearch = () => {
-    const found = mockApplications.find(app => 
-      app.applicationNumber.toLowerCase().includes(applicationNumber.toLowerCase())
-    );
-    if (found) {
-      setSelectedApplication(found);
-    } else {
+  const handleSearch = async () => {
+    if (!applicationNumber.trim()) {
+      alert('Masukkan nomor aplikasi');
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+    
+    try {
+      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+      const response = await fetch(`${API_BASE_URL}/api/applications/track/${applicationNumber}`);
+      
+      if (!response.ok) {
+        throw new Error('Application not found');
+      }
+      
+      const data = await response.json();
+      setSelectedApplication(data);
+    } catch (err) {
+      console.error('Error fetching application:', err);
+      setError('Nomor aplikasi tidak ditemukan. Pastikan nomor yang dimasukkan benar.');
       alert('Nomor aplikasi tidak ditemukan');
+    } finally {
+      setLoading(false);
     }
   };
 
+  // Use mockApplications[0] only as fallback for display purposes
   const application = selectedApplication || mockApplications[0];
   const statusInfo = statusConfig[application.status];
   const StatusIcon = statusInfo.icon;

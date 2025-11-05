@@ -93,11 +93,53 @@ const Ajukan = () => {
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     // Handle form submission
-    console.log('Form submitted:', formData);
-    // In real app, this would send data to backend
-    alert('Pengajuan berhasil! Anda akan dihubungi oleh Loan Adviser kami dalam 24 jam.');
+    try {
+      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+      
+      const applicationData = {
+        full_name: formData.step2.fullName,
+        email: formData.step2.email,
+        phone: formData.step2.phone,
+        city: formData.step2.city,
+        address: formData.step2.address,
+        product_type: formData.step1.productType,
+        loan_amount: formData.step1.loanAmount,
+        loan_purpose: formData.step1.loanPurpose,
+        preferred_advisor: formData.step2.preferredAdvisor,
+        monthly_income: formData.step3.monthlyIncome,
+        occupation: formData.step3.occupation,
+        company_name: formData.step3.companyName,
+        work_experience: formData.step3.workExperience,
+        has_npwp: formData.step3.hasNPWP,
+        has_ktp: formData.step3.hasKTP,
+        additional_notes: formData.step3.additionalNotes,
+      };
+
+      const response = await fetch(`${API_BASE_URL}/api/applications/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(applicationData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to submit application');
+      }
+
+      const result = await response.json();
+      
+      // Store application number for tracking
+      localStorage.setItem('last_application_number', result.application_number);
+      
+      // Move to step 4 (success screen)
+      setCurrentStep(4);
+    } catch (error) {
+      console.error('Error submitting application:', error);
+      alert('Terjadi kesalahan saat mengirim pengajuan. Silakan coba lagi.');
+    }
   };
 
   const updateFormData = (step: keyof FormData, field: string, value: any) => {
