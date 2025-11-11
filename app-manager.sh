@@ -20,7 +20,7 @@ show_help() {
 
 list_apps() {
     echo "Running applications:"
-    podman ps --format "table {{.Names}}\t{{.Image}}\t{{.Status}}\t{{.Ports}}"
+    docker ps --format "table {{.Names}}\t{{.Image}}\t{{.Status}}\t{{.Ports}}" 2>/dev/null || echo "No containers running"
     echo ""
     echo "Nginx configuration has the following server blocks:"
     grep -E "server_name|proxy_pass" $NGINX_CONFIG | grep -A1 server_name
@@ -36,7 +36,7 @@ show_status() {
     sudo ufw status | head -5
     echo ""
     echo "Running containers:"
-    podman ps --format "table {{.Names}}\t{{.Status}}"
+    docker ps --format "table {{.Names}}\t{{.Status}}" 2>/dev/null || echo "No containers running"
     echo ""
     echo "Listening ports:"
     sudo ss -tulnp | grep LISTEN

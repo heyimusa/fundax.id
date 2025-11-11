@@ -1,3 +1,4 @@
+import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import Login from './pages/Login';
@@ -6,6 +7,10 @@ import Dashboard from './pages/Dashboard';
 import Applications from './pages/Applications';
 import ApplicationDetail from './pages/ApplicationDetail';
 import Advisors from './pages/Advisors';
+import Products from './pages/Products';
+import Articles from './pages/Articles';
+import Users from './pages/Users';
+import Settings from './pages/Settings';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, loading } = useAuth();
@@ -42,6 +47,10 @@ function App() {
         <Route path="applications" element={<Applications />} />
         <Route path="applications/:id" element={<ApplicationDetail />} />
         <Route path="advisors" element={<Advisors />} />
+        <Route path="products" element={<Products />} />
+        <Route path="articles" element={<Articles />} />
+        <Route path="users" element={<Users />} />
+        <Route path="settings" element={<Settings />} />
       </Route>
     </Routes>
   );

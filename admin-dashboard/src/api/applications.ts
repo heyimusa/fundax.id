@@ -1,5 +1,5 @@
 import { apiClient } from './client';
-import { Application } from '../types';
+import { Application, TimelineEntry } from '../types';
 
 export const applicationsApi = {
   list: async (params?: {
@@ -35,6 +35,15 @@ export const applicationsApi = {
 
   delete: async (id: number): Promise<void> => {
     await apiClient.delete(`/api/applications/${id}`);
+  },
+
+  addTimelineEntry: async (id: number, data: {
+    status: string;
+    current_step: string;
+    notes?: string;
+  }): Promise<TimelineEntry> => {
+    const response = await apiClient.post(`/api/applications/${id}/timeline`, data);
+    return response.data;
   },
 };
 

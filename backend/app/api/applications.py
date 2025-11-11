@@ -17,6 +17,7 @@ from app.schemas.application import (
     ApplicationListResponse,
     ApplicationStatusUpdate,
     ApplicationAssign,
+    TimelineEntry,
 )
 from app.services.application_service import generate_application_number, get_or_create_user
 
@@ -270,6 +271,37 @@ def assign_advisor(
     db.refresh(application)
     
     return application
+
+
+@router.post("/{application_id}/timeline", response_model=TimelineEntry, status_code=status.HTTP_201_CREATED)
+def add_timeline_entry(
+    application_id: int,
+    timeline_data: ApplicationStatusUpdate,
+    db: Session = Depends(get_db),
+    current_user: Admin = Depends(require_role(["admin", "adviser"]))
+):
+    """Add timeline entry to application (admin/adviser only)"""
+    
+    application = db.query(Application).filter(Application.id == application_id).first()
+    
+    if not application:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Application not found"
+        )
+    
+    # Create timeline entry
+    timeline_entry = ApplicationTimeline(
+        application_id=application.id,
+        status=timeline_data.status,
+        notes=timeline_data.notes,
+        created_by=current_user.id
+    )
+    db.add(timeline_entry)
+    db.commit()
+    db.refresh(timeline_entry)
+    
+    return timeline_entry
 
 
 @router.delete("/{application_id}", status_code=status.HTTP_204_NO_CONTENT)

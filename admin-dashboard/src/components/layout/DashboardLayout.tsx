@@ -6,7 +6,10 @@ import {
   Users, 
   UserCircle, 
   LogOut,
-  Menu
+  Menu,
+  Package,
+  Newspaper,
+  Settings
 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -23,7 +26,11 @@ const DashboardLayout = () => {
   const navigation = [
     { name: 'Dashboard', href: '/', icon: LayoutDashboard },
     { name: 'Applications', href: '/applications', icon: FileText },
+    { name: 'Users', href: '/users', icon: UserCircle },
     { name: 'Advisors', href: '/advisors', icon: Users },
+    { name: 'Products', href: '/products', icon: Package },
+    { name: 'Articles', href: '/articles', icon: Newspaper },
+    { name: 'Settings', href: '/settings', icon: Settings },
   ];
 
   return (

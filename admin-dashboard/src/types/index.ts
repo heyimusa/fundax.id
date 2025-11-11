@@ -111,3 +111,32 @@ export interface LoginResponse {
   token_type: string;
 }
 
+export interface Product {
+  id: number;
+  name: string;
+  slug: string;
+  description?: string;
+  features?: string;
+  requirements?: string;
+  interest_rate_min?: number;
+  interest_rate_max?: number;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Article {
+  id: number;
+  title: string;
+  slug: string;
+  content: string;
+  excerpt?: string;
+  category?: string;
+  image_url?: string;
+  author?: string;
+  is_published: boolean;
+  published_at?: string;
+  created_at: string;
+  updated_at: string;
+}
+
